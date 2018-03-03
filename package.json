@@ -13,7 +13,8 @@
     "typescript": "^2.7.2"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register src/test.ts"
+    "test": "mocha -r ts-node/register src/*.spec.ts",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "author": "",
   "license": "ISC",
