@@ -12,7 +12,8 @@
         "semicolon": [
             true,
             "never"
-        ]
+        ],
+        "no-console": false
     },
     "rulesDirectory": []
 }

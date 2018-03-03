@@ -1,8 +1,8 @@
 import { expect } from "chai"
 import "mocha"
-import Card from "./card"
-import Game from "./game"
-import Player from "./player"
+import Card from "../lib/card"
+import Game from "../lib/game"
+import Player from "../lib/player"
 
 describe("Test Card", () => {
     let card

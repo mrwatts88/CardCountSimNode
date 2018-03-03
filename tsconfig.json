@@ -2,8 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
-        // "sourceMap": true, /* Generates corresponding '.map' file. */
-        "outDir": "build", /* Redirect output structure to the directory. */
+        "outDir": "bin",
         "rootDir": "src",
     },
     "exclude": [
