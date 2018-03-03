@@ -1,18 +1,20 @@
+enum Suit { C, D, H, S }
 export default class Card {
 
-    public suit: Suit;
-    public value: number;
+    public static Suits = Suit;
+    public readonly suit: Suit;
+    public readonly value: number;
 
     constructor(suit: Suit, value: number) {
         this.suit = suit;
         this.value = value;
     }
 
-    public toString() {
-        return this.valToString(this.value) + Suit[this.suit];
+    public toString(): string {
+        return this.intValToStringVal(this.value) + Suit[this.suit];
     }
 
-    public valToString(value: number) {
+    public intValToStringVal(value: number): string {
         switch (value) {
             case 1:
                 return 'A';
@@ -40,13 +42,9 @@ export default class Card {
                 return 'Q';
             case 13:
                 return 'K';
+            default:
+                throw "Not a valid card value.";
+
         }
     }
-}
-
-export enum Suit {
-    C,
-    D,
-    H,
-    S
 }
