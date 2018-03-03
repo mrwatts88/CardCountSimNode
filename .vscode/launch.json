@@ -15,7 +15,7 @@
             "protocol": "inspector",
             "runtimeExecutable": "node",
             "preLaunchTask": "compile",
-            "program": "${workspaceFolder}/build/test.js"
+            "program": "${workspaceFolder}/build/app.js"
         }
     ]
 }
