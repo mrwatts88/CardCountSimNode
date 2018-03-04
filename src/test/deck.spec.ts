@@ -19,7 +19,7 @@ describe("Test Deck", () => {
     it("should deal a Card object", () => {
         const card = deck.dealCard()
         expect(card).to.be.instanceof(Card)
-        expect(_.isEqual(card, new Card(0, 1))).to.equal(true)
+        expect(_.isEqual(card, new Card(Card.Suits.C, 1))).to.equal(true)
     })
 
     it("should deal 52 cards", () => {

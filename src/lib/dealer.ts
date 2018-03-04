@@ -1,8 +1,10 @@
 import Card from "./card"
-import { Action } from "./game"
+
+enum Action { STAND, HIT, DOUBLE, SPLIT }
 
 export default class Dealer {
-    public currentHand: Card[]
+    public static actions = Action;
+    private currentHand: Card[]
     public busted
 
     constructor() {
@@ -17,6 +19,28 @@ export default class Dealer {
 
     public calcHandTotal(): number {
         // TODO
-        return 20
+
+        let total: number = this.currentHand.reduce((prev, cur) => {
+            return prev + cur.valAsInt()
+        }, 0)
+
+        let mightHaveAce: boolean = true
+        if (total > 21)
+            for (let card of this.currentHand)
+                if (card.value == 1) {
+                    total -= 10
+                    if (total < 22) break
+                }
+
+        return total
+    }
+
+    public addCardToHand(card: Card): void {
+        this.currentHand.push(card)
+    }
+
+    public getCardAt(position: number): Card {
+        return this.currentHand[position]
     }
 }
+

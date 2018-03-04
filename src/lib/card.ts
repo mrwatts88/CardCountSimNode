@@ -11,11 +11,11 @@ export default class Card {
     }
 
     public toString(): string {
-        return this.intValToStringVal(this.value) + Suit[this.suit]
+        return this.valAsString() + Suit[this.suit]
     }
 
-    public intValToStringVal(value: number): string {
-        switch (value) {
+    public valAsString(): string {
+        switch (this.value) {
             case 1:
                 return "A"
             case 2:
@@ -44,6 +44,23 @@ export default class Card {
                 return "K"
             default:
                 throw new Error("Not a valid card value.")
+        }
+    }
+
+    public valAsInt(): number {
+        if (this.value > 1 && this.value < 11)
+            return this.value;
+        else {
+            switch (this.value) {
+                case 1:
+                    return 11
+                case 11:
+                case 12:
+                case 13:
+                    return 10
+                default:
+                    throw new Error("Nota valid card value.")
+            }
         }
     }
 }

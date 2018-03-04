@@ -128,7 +128,6 @@ export default class Game {
     }
 }
 
-export enum Action { STAND, HIT, DOUBLE, SPLIT }
 
 // Constants, enums, etc
 const BLACKJACK_MULTIPLIER = 1.5
