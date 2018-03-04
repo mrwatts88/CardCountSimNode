@@ -4,10 +4,10 @@ import Player from "./player"
 import Shoe from "./shoe"
 
 export default class Game {
-    public activePlayers: Player[]
-    public dealer: Dealer
-    public shoe: Shoe
-    public roundIsOver: boolean
+    private activePlayers: Player[]
+    private dealer: Dealer
+    private shoe: Shoe
+    private roundIsOver: boolean
     private bustedPlayers: Player[]
 
     constructor() {
@@ -18,8 +18,8 @@ export default class Game {
     }
 
     public addPlayer(player: Player): void {
-        // if (!this.roundIsOver)
-        //     throw "Cannot add player during round."; // TODO: Check on this syntax
+        if (!this.roundIsOver)
+            throw new Error("Cannot add player during round.")
 
         this.activePlayers.push(player)
     }
@@ -62,7 +62,7 @@ export default class Game {
         for (const player of this.activePlayers) {
             if (player.hasBlackjack()) {
                 player.resolveBet(BLACKJACK_MULTIPLIER)
-                player.discarded = true
+                player.bustedOrDiscarded = true
             } else {
                 let takeAction = true
                 while (takeAction) {
@@ -80,7 +80,7 @@ export default class Game {
                             newCard = this.shoe.dealCard()
                             player.currentHand.push(newCard)
                             if (player.calcHandTotal() > 21) {
-                                player.discarded = true
+                                player.bustedOrDiscarded = true
                                 takeAction = false
                                 break
                             }
@@ -96,7 +96,7 @@ export default class Game {
             }
 
             for (let i = this.activePlayers.length - 1; i >= 0; ++i)
-                if (this.activePlayers[i].discarded)
+                if (this.activePlayers[i].bustedOrDiscarded)
                     this.bustedPlayers.push(this.activePlayers.splice(i, 1)[0])
         }
     }
@@ -111,7 +111,7 @@ export default class Game {
                     newCard = this.shoe.dealCard()
                     this.dealer.currentHand.push(newCard)
                     if (this.dealer.calcHandTotal() > 21) {
-                        this.dealer.busted = true
+                        this.dealer.bustedOrDiscarded = true
                         takeAction = false
                         break
                     }
@@ -127,7 +127,6 @@ export default class Game {
         // TODO
     }
 }
-
 
 // Constants, enums, etc
 const BLACKJACK_MULTIPLIER = 1.5

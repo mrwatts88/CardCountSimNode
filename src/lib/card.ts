@@ -49,8 +49,8 @@ export default class Card {
 
     public valAsInt(): number {
         if (this.value > 1 && this.value < 11)
-            return this.value;
-        else {
+            return this.value
+        else
             switch (this.value) {
                 case 1:
                     return 11
@@ -61,6 +61,5 @@ export default class Card {
                 default:
                     throw new Error("Nota valid card value.")
             }
-        }
     }
 }

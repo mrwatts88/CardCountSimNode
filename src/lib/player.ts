@@ -1,22 +1,19 @@
 import Card from "./card"
-import { Action } from "./game"
+import Participant from "./participant"
 
-export default class Player {
+export default class Player extends Participant {
     public bankroll: number
     public currentBet: number
-    public currentHand: Card[]
-    public discarded: boolean
     private bettingRamp: Map<number, number>
     private ill18: boolean
 
     constructor(bettingRamp: number[], ill18: boolean) {
-        this.discarded = false
+        super();
         this.ill18 = ill18
         this.bettingRamp = new Map()
         for (let i = 1; i < 11; ++i)
             this.bettingRamp.set(i, bettingRamp[i - 1])
         this.currentBet = 0
-        this.currentHand = []
         this.bankroll = 0
     }
 
@@ -37,17 +34,8 @@ export default class Player {
         this.bankroll += multiplier === 0 ? 0 : (this.currentBet * (multiplier + 1))
     }
 
-    public decideAction(count: number, dealerUpcardVal: number): Action {
+    public decideAction(count: number, dealerUpcardVal: number): number {
         // TODO: implement basic strategy here, take into account ill18
-        return Action.HIT
-    }
-
-    public calcHandTotal(): number {
-        // TODO
-        return 21
-    }
-
-    public hasBlackjack(): boolean {
-        return false
+        return Participant.actions.STAND
     }
 }

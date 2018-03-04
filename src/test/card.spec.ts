@@ -14,7 +14,7 @@ describe("Test Card", () => {
     before(() => {
         card = new Card(suit, val)
 
-        cards = [];
+        cards = []
         for (let i = 1; i <= 13; i++)
             cards.push(new Card(Card.Suits.C, i))
     })

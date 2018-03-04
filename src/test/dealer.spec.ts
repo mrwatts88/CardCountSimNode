@@ -1,6 +1,5 @@
 import { expect } from "chai"
 import "mocha"
-import * as _ from "lodash"
 import Card from "../lib/card"
 import Dealer from "../lib/dealer"
 
@@ -65,9 +64,8 @@ describe("Test Dealer", () => {
         expect(dealer2.calcHandTotal()).to.equal(card3.valAsInt() + card4.valAsInt())
     })
 
-
     it("test calcHandTotal (more than 2 cards, at least one Ace)", () => {
-        expect(dealer3.calcHandTotal()).to.equal(19);
-        expect(dealer4.calcHandTotal()).to.equal(14);
+        expect(dealer3.calcHandTotal()).to.equal(19)
+        expect(dealer4.calcHandTotal()).to.equal(14)
     })
 })

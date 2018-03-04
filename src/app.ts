@@ -35,7 +35,7 @@ export class Main {
 
             // TODO: Move the following block into a method in Game
             for (const p of game.activePlayers)
-                if (game.dealer.busted)
+                if (game.dealer.bustedOrDiscarded)
                     p.resolveBet(1)
                 else {
                     const diff = p.calcHandTotal() - game.dealer.calcHandTotal()
