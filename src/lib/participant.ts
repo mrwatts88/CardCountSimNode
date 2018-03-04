@@ -4,8 +4,8 @@ enum Action { STAND, HIT, DOUBLE, SPLIT }
 
 export default abstract class Participant {
     public static actions = Action
+    public bustedOrDiscarded: boolean
     private currentHand: Card[]
-    private bustedOrDiscarded: boolean
 
     constructor() {
         this.currentHand = []

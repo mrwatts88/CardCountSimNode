@@ -68,4 +68,6 @@ describe("Test Player", () => {
         expect(player3.calcHandTotal()).to.equal(19)
         expect(player4.calcHandTotal()).to.equal(14)
     })
+
+    // TODO: More methods to test
 })

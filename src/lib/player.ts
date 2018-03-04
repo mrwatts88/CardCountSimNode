@@ -8,7 +8,7 @@ export default class Player extends Participant {
     private ill18: boolean
 
     constructor(bettingRamp: number[], ill18: boolean) {
-        super();
+        super()
         this.ill18 = ill18
         this.bettingRamp = new Map()
         for (let i = 1; i < 11; ++i)
@@ -30,8 +30,8 @@ export default class Player extends Participant {
     }
 
     public resolveBet(multiplier) {
-        // 0 = loss, 0.5 = push, 1 = even money win, 1.2 = 6 to 5, 1.5 = 3 to 2
-        this.bankroll += multiplier === 0 ? 0 : (this.currentBet * (multiplier + 1))
+        // -1 = loss, 0 = push, 1 = even money win, 1.2 = 6 to 5, 1.5 = 3 to 2
+        this.bankroll += multiplier === -1 ? 0 : (this.currentBet * (multiplier + 1))
     }
 
     public decideAction(count: number, dealerUpcardVal: number): number {

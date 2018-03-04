@@ -1,5 +1,6 @@
 import Card from "./card"
 import Dealer from "./dealer"
+import Participant from "./participant"
 import Player from "./player"
 import Shoe from "./shoe"
 
@@ -31,21 +32,21 @@ export default class Game {
 
     public dealRound(): void {
         for (const player of this.activePlayers)
-            player.currentHand.push(this.shoe.dealCard())
+            player.addCardToHand(this.shoe.dealCard())
 
-        this.dealer.currentHand.push(this.shoe.dealCard())
+        this.dealer.addCardToHand(this.shoe.dealCard())
 
         for (const player of this.activePlayers)
-            player.currentHand.push(this.shoe.dealCard())
+            player.addCardToHand(this.shoe.dealCard())
 
-        this.dealer.currentHand.push(this.shoe.dealCard())
+        this.dealer.addCardToHand(this.shoe.dealCard())
     }
 
     public handleInsurance(): void {
-        if (this.dealer.currentHand[0].value !== 1) return
+        if (this.dealer.getCardAt(0).value !== 1) return
         for (const player of this.activePlayers)
             if (player.usingIll18() && this.shoe.calcTrueCount() >= Ill18Indices.insurance)
-                switch (this.dealer.currentHand[1].value) {
+                switch (this.dealer.getCardAt(1).value) {
                     case 10:
                     case 11:
                     case 12:
@@ -66,29 +67,29 @@ export default class Game {
             } else {
                 let takeAction = true
                 while (takeAction) {
-                    const action: Action =
-                        player.decideAction(this.shoe.calcTrueCount(), this.dealer.currentHand[0].value)
+                    const action: number =
+                        player.decideAction(this.shoe.calcTrueCount(), this.dealer.getCardAt(0).value)
                     let newCard: Card
                     switch (action) {
-                        case Action.DOUBLE:
-                            player.currentHand.push(this.shoe.dealCard())
+                        case Participant.actions.DOUBLE:
+                            player.addCardToHand(this.shoe.dealCard())
                             player.bankroll -= player.currentBet
                             player.currentBet *= 2
                             takeAction = false
                             break
-                        case Action.HIT:
+                        case Participant.actions.HIT:
                             newCard = this.shoe.dealCard()
-                            player.currentHand.push(newCard)
+                            player.addCardToHand(newCard)
                             if (player.calcHandTotal() > 21) {
                                 player.bustedOrDiscarded = true
                                 takeAction = false
                                 break
                             }
                             break
-                        case Action.SPLIT:
+                        case Participant.actions.SPLIT:
                             // TODO
                             break
-                        case Action.STAND:
+                        case Participant.actions.STAND:
                             takeAction = false
                             break
                     }
@@ -104,19 +105,19 @@ export default class Game {
     public dealerPlayRound(): void {
         let takeAction = true
         while (takeAction) {
-            const action: Action = this.dealer.decideAction()
+            const action: number = this.dealer.decideAction()
             let newCard: Card
             switch (action) {
-                case Action.HIT:
+                case Participant.actions.HIT:
                     newCard = this.shoe.dealCard()
-                    this.dealer.currentHand.push(newCard)
+                    this.dealer.addCardToHand(newCard)
                     if (this.dealer.calcHandTotal() > 21) {
                         this.dealer.bustedOrDiscarded = true
                         takeAction = false
                         break
                     }
                     break
-                case Action.STAND:
+                case Participant.actions.STAND:
                     takeAction = false
                     break
             }
