@@ -12,10 +12,15 @@ export default class Game {
     private bustedPlayers: Player[]
 
     constructor() {
-        this.roundIsOver = false
+        this.roundIsOver = true
         this.activePlayers = []
         this.dealer = new Dealer()
         this.shoe = new Shoe(NUMBER_OF_DECKS, CARDS_BEFORE_CUT, hiLoCountMap)
+        this.shoe.init()
+    }
+
+    public shuffleShoe(): void {
+        this.shoe.shuffle()
     }
 
     public addPlayer(player: Player): void {
@@ -25,12 +30,15 @@ export default class Game {
         this.activePlayers.push(player)
     }
 
+    // This is used only during card counting simulation, not for creating a blackjack playing app
     public placeBets(): void {
+        this.roundIsOver = false
         for (const player of this.activePlayers)
             player.placeBet(this.shoe.calcTrueCount())
     }
 
     public dealRound(): void {
+        // TODO: Check that all active players have placed a bet
         for (const player of this.activePlayers)
             player.addCardToHand(this.shoe.dealCard())
 
@@ -42,6 +50,8 @@ export default class Game {
         this.dealer.addCardToHand(this.shoe.dealCard())
     }
 
+    // TODO: Split into placeInsuranceBets() and resolveInsuranceBets()
+    // placeInsuranceBets() will only be used in simulation, resolve will also be used in game-playing app
     public handleInsurance(): void {
         if (this.dealer.getCardAt(0).value !== 1) return
         for (const player of this.activePlayers)
@@ -59,6 +69,8 @@ export default class Game {
                 }
     }
 
+    // Only used in simulation
+    // TODO: What to do about moving players to bustedPlayers if not using simulation???
     public playersPlayRound(): void {
         for (const player of this.activePlayers) {
             if (player.hasBlackjack()) {
@@ -96,13 +108,14 @@ export default class Game {
                 }
             }
 
-            for (let i = this.activePlayers.length - 1; i >= 0; ++i)
+            for (let i = this.activePlayers.length - 1; i >= 0; --i)
                 if (this.activePlayers[i].bustedOrDiscarded)
                     this.bustedPlayers.push(this.activePlayers.splice(i, 1)[0])
         }
     }
 
     public dealerPlayRound(): void {
+        if (this.activePlayers.length <= 0) return
         let takeAction = true
         while (takeAction) {
             const action: number = this.dealer.decideAction()
@@ -124,8 +137,38 @@ export default class Game {
         }
     }
 
+    public resolveBets(): void {
+        for (const p of this.activePlayers)
+            if (this.dealer.bustedOrDiscarded)
+                p.resolveBet(1)
+            else {
+                const diff = p.calcHandTotal() - this.dealer.calcHandTotal()
+                if (diff > 0)
+                    p.resolveBet(1)
+                else if (diff < 0)
+                    p.resolveBet(0)
+                else
+                    p.resolveBet(0.5)
+            }
+    }
+
+    public numPlayers(): number {
+        return this.activePlayers.length
+    }
+
+    public getPlayerAt(i: number): Player {
+        if (this.activePlayers.length <= i)
+            throw new Error("No player here")
+        return this.activePlayers[i]
+    }
+
+    public getDealer(): Dealer {
+        return this.dealer
+    }
+
     public cleanUp(): void {
         // TODO
+        this.roundIsOver = true
     }
 }
 

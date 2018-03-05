@@ -52,8 +52,8 @@ describe("Test Player", () => {
     })
 
     it("test addCardToHand", () => {
-        expect(player1.getCardAt(0) === card1)
-        expect(player1.getCardAt(1) === card2)
+        expect(player1.getCardAt(0)).to.equal(card1)
+        expect(player1.getCardAt(1)).to.equal(card2)
     })
 
     it("test decideAction", () => {
