@@ -1,12 +1,16 @@
 import { expect } from "chai"
 import "mocha"
 import Card from "../lib/card"
+import Participant from "../lib/participant"
 import Player from "../lib/player"
+import { SIX_DECK_H17_DAS_NO_SURR } from "../lib/strategy"
+
+// declare Actions = Participant.actions;
 
 describe("Test Player", () => {
     let card1, card2, card3, card4, card5,
         card6, card7, card8, card9, card10, card11, card12
-    let player1, player2, player3, player4
+    let player1, player2, player3, player4, player5
 
     before(() => {
 
@@ -30,25 +34,27 @@ describe("Test Player", () => {
         card11 = new Card(0, 1)
         card12 = new Card(0, 1)
 
-        player1 = new Player([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], false)
+        player1 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         player1.addCardToHand(card1)
         player1.addCardToHand(card2)
 
-        player2 = new Player([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], false)
+        player2 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         player2.addCardToHand(card3)
         player2.addCardToHand(card4)
 
-        player3 = new Player([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], false)
+        player3 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         player3.addCardToHand(card5)
         player3.addCardToHand(card6)
         player3.addCardToHand(card7)
         player3.addCardToHand(card8)
 
-        player4 = new Player([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], false)
+        player4 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         player4.addCardToHand(card9)
         player4.addCardToHand(card10)
         player4.addCardToHand(card11)
         player4.addCardToHand(card12)
+
+        player5 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     })
 
     it("test addCardToHand", () => {
@@ -71,14 +77,27 @@ describe("Test Player", () => {
 
     it("test placeBet", () => {
         // TODO
+        player5.placeBet(5)
     })
 
     it("test resolveBet()", () => {
         // TODO
+        player5.resolveBet(1)
     })
 
-    it("test decideAction()", () => {
-        // TODO
+    it("should split 3s against 7 or less", () => {
+        player5.addCardToHand(new Card(0, 3))
+        player5.addCardToHand(new Card(3, 3))
+        expect(player5.decideAction(2, 2)).to.equal(Participant.actions.SPLIT)
+        expect(player5.decideAction(2, 3)).to.equal(Participant.actions.SPLIT)
+        expect(player5.decideAction(2, 4)).to.equal(Participant.actions.SPLIT)
+        expect(player5.decideAction(2, 5)).to.equal(Participant.actions.SPLIT)
+        expect(player5.decideAction(2, 6)).to.equal(Participant.actions.SPLIT)
+        expect(player5.decideAction(2, 7)).to.equal(Participant.actions.SPLIT)
+        expect(player5.decideAction(2, 8)).to.equal(Participant.actions.HIT)
+        expect(player5.decideAction(2, 9)).to.equal(Participant.actions.HIT)
+        expect(player5.decideAction(2, 10)).to.equal(Participant.actions.HIT)
+        expect(player5.decideAction(2, 11)).to.equal(Participant.actions.HIT)
     })
 
     // TODO: More methods to test

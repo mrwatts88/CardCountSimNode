@@ -5,10 +5,12 @@ import Dealer from "../lib/dealer"
 
 describe("Test Dealer", () => {
     let card1, card2, card3, card4, card5,
-        card6, card7, card8, card9, card10, card11, card12
-    let dealer1, dealer2, dealer3, dealer4
+        card6, card7, card8, card9, card10,
+        card11, card12, card13, card14
+    let dealer1, dealer2, dealer3, dealer4, dealer5
 
     before(() => {
+        // TODO: make sure card isn't already in another hand
 
         // All possible cards
         card1 = new Card(0, 1 + Math.floor(Math.random() * 13))
@@ -30,6 +32,10 @@ describe("Test Dealer", () => {
         card11 = new Card(0, 1)
         card12 = new Card(0, 1)
 
+        // Dealer 5
+        card13 = new Card(0, 1)
+        card14 = new Card(0, 10 + Math.floor(Math.random() * 4))
+
         dealer1 = new Dealer()
         dealer1.addCardToHand(card1)
         dealer1.addCardToHand(card2)
@@ -49,6 +55,10 @@ describe("Test Dealer", () => {
         dealer4.addCardToHand(card10)
         dealer4.addCardToHand(card11)
         dealer4.addCardToHand(card12)
+
+        dealer5 = new Dealer()
+        dealer5.addCardToHand(card13)
+        dealer5.addCardToHand(card14)
     })
 
     it("test addCardToHand", () => {
@@ -67,5 +77,9 @@ describe("Test Dealer", () => {
     it("test calcHandTotal (more than 2 cards, at least one Ace)", () => {
         expect(dealer3.calcHandTotal()).to.equal(19)
         expect(dealer4.calcHandTotal()).to.equal(14)
+    })
+
+    it("should have blackjack", () => {
+        expect(dealer5.hasBlackjack()).to.equal(true)
     })
 })

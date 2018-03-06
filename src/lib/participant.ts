@@ -1,18 +1,16 @@
 import Card from "./card"
 
-enum Action { STAND, HIT, DOUBLE, SPLIT }
+enum Action { STAND, HIT, DOUBLE, SPLIT, DS }
 
 export default abstract class Participant {
     public static actions = Action
     public bustedOrDiscarded: boolean
-    private currentHand: Card[]
+    protected currentHand: Card[]
 
     constructor() {
         this.currentHand = []
         this.bustedOrDiscarded = false
     }
-
-    public abstract decideAction(count: number, dealerUpcardVal: number): Action
 
     public calcHandTotal(): number {
         let total: number = this.currentHand.reduce((prev, cur) => {
@@ -39,7 +37,8 @@ export default abstract class Participant {
     }
 
     public hasBlackjack(): boolean {
-        // TODO
-        return false
+        if (this.currentHand.length !== 2) return false
+        return (this.currentHand[0].value === 1 && this.currentHand[1].valAsInt() === 10) ||
+            (this.currentHand[1].value === 1 && this.currentHand[0].valAsInt() === 10)
     }
 }

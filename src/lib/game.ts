@@ -2,6 +2,7 @@ import Card from "./card"
 import Dealer from "./dealer"
 import Participant from "./participant"
 import Player from "./player"
+import { IRuleSet } from "./rules"
 import Shoe from "./shoe"
 
 export default class Game {
@@ -10,8 +11,10 @@ export default class Game {
     private shoe: Shoe
     private roundIsOver: boolean
     private bustedPlayers: Player[]
+    private ruleSet: IRuleSet
 
-    constructor() {
+    constructor(ruleSet: IRuleSet) {
+        this.ruleSet = ruleSet
         this.roundIsOver = true
         this.activePlayers = []
         this.dealer = new Dealer()
@@ -118,7 +121,7 @@ export default class Game {
         if (this.activePlayers.length <= 0) return
         let takeAction = true
         while (takeAction) {
-            const action: number = this.dealer.decideAction()
+            const action: number = this.dealer.decideAction(this.ruleSet.h17)
             let newCard: Card
             switch (action) {
                 case Participant.actions.HIT:

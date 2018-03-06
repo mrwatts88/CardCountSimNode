@@ -6,14 +6,15 @@ import Game from "../lib/game"
 import Participant from "../lib/participant"
 import Player from "../lib/player"
 import Shoe from "../lib/shoe"
+import { SIX_DECK_H17_DAS_NO_SURR } from "../lib/strategy"
 
 describe("Test Game", () => {
     let game1
     let player1
 
     before(() => {
-        game1 = new Game()
-        player1 = new Player([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], false)
+        game1 = new Game({ h17: true })
+        player1 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     })
 
     it("should have a dealer", () => {

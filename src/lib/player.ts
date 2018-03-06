@@ -1,14 +1,17 @@
 import Card from "./card"
 import Participant from "./participant"
+import { IStrategy } from "./strategy"
 
 export default class Player extends Participant {
     public bankroll: number
     public currentBet: number
     private bettingRamp: Map<number, number>
     private ill18: boolean
+    private basicStrategy: IStrategy
 
-    constructor(bettingRamp: number[], ill18: boolean) {
+    constructor(basicStrategy: IStrategy, ill18: boolean, bettingRamp: number[]) {
         super()
+        this.basicStrategy = basicStrategy
         this.ill18 = ill18
         this.bettingRamp = new Map()
         for (let i = 1; i < 11; ++i)
@@ -36,6 +39,9 @@ export default class Player extends Participant {
 
     public decideAction(count: number, dealerUpcardVal: number): number {
         // TODO: implement basic strategy here, take into account ill18
-        return Participant.actions.STAND
+        if (this.currentHand.length === 2 && this.currentHand[0].valAsInt() === this.currentHand[1].valAsInt())
+            return this.basicStrategy.PAIRS[dealerUpcardVal][this.currentHand[0].valAsInt()]
+        else
+            return Participant.actions.STAND
     }
 }
