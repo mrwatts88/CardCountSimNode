@@ -20,12 +20,6 @@ export default class Deck {
         }
     }
 
-    // for debugging
-    private print(): void {
-        for (const card of this.cardsNotDealt)
-            console.info(card.toString())
-    }
-
     public dealCard(): Card {
         const card: Card = this.cardsNotDealt.shift()
         this.cardsDealt.push(card)
@@ -43,5 +37,11 @@ export default class Deck {
             for (let value: number = 0; value < 13; ++value)
                 this.cardsNotDealt[13 * suit + value] = new Card(suit, value + 1)
 
+    }
+
+    // for debugging
+    private print(): void {
+        for (const card of this.cardsNotDealt)
+            console.info(card.toString())
     }
 }

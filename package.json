@@ -16,7 +16,8 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'"
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "fix": "tslint --fix 'src/**/*.ts'"
   },
   "author": "",
   "license": "ISC",
