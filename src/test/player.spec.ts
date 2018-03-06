@@ -5,7 +5,7 @@ import Participant from "../lib/participant"
 import Player from "../lib/player"
 import { SIX_DECK_H17_DAS_NO_SURR } from "../lib/strategy"
 
-// declare Actions = Participant.actions;
+const { actions: { HIT, STAND, SPLIT, DOUBLE, DS } } = Participant
 
 describe("Test Player", () => {
     let card1, card2, card3, card4, card5,
@@ -88,16 +88,16 @@ describe("Test Player", () => {
     it("should split 3s against 7 or less", () => {
         player5.addCardToHand(new Card(0, 3))
         player5.addCardToHand(new Card(3, 3))
-        expect(player5.decideAction(2, 2)).to.equal(Participant.actions.SPLIT)
-        expect(player5.decideAction(2, 3)).to.equal(Participant.actions.SPLIT)
-        expect(player5.decideAction(2, 4)).to.equal(Participant.actions.SPLIT)
-        expect(player5.decideAction(2, 5)).to.equal(Participant.actions.SPLIT)
-        expect(player5.decideAction(2, 6)).to.equal(Participant.actions.SPLIT)
-        expect(player5.decideAction(2, 7)).to.equal(Participant.actions.SPLIT)
-        expect(player5.decideAction(2, 8)).to.equal(Participant.actions.HIT)
-        expect(player5.decideAction(2, 9)).to.equal(Participant.actions.HIT)
-        expect(player5.decideAction(2, 10)).to.equal(Participant.actions.HIT)
-        expect(player5.decideAction(2, 11)).to.equal(Participant.actions.HIT)
+        expect(player5.decideAction(2, 2)).to.equal(SPLIT)
+        expect(player5.decideAction(2, 3)).to.equal(SPLIT)
+        expect(player5.decideAction(2, 4)).to.equal(SPLIT)
+        expect(player5.decideAction(2, 5)).to.equal(SPLIT)
+        expect(player5.decideAction(2, 6)).to.equal(SPLIT)
+        expect(player5.decideAction(2, 7)).to.equal(SPLIT)
+        expect(player5.decideAction(2, 8)).to.equal(HIT)
+        expect(player5.decideAction(2, 9)).to.equal(HIT)
+        expect(player5.decideAction(2, 10)).to.equal(HIT)
+        expect(player5.decideAction(2, 11)).to.equal(HIT)
     })
 
     // TODO: More methods to test
