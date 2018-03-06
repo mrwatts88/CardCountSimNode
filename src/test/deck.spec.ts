@@ -33,7 +33,11 @@ describe("Test Deck", () => {
         expect(deck.isEmpty()).to.equal(true)
     })
 
-    it("shuffle should shuffle the cards", () => {
+    it("should shuffle the cards", () => {
+        // TODO
+    })
+
+    it("test init", () => {
         // TODO
     })
 })

@@ -20,7 +20,8 @@ export default class Deck {
         }
     }
 
-    public print(): void {
+    // for debugging
+    private print(): void {
         for (const card of this.cardsNotDealt)
             console.info(card.toString())
     }

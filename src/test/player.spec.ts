@@ -69,5 +69,17 @@ describe("Test Player", () => {
         expect(player4.calcHandTotal()).to.equal(14)
     })
 
+    it("test placeBet", () => {
+        // TODO
+    })
+
+    it("test resolveBet()", () => {
+        // TODO
+    })
+
+    it("test decideAction()", () => {
+        // TODO
+    })
+
     // TODO: More methods to test
 })

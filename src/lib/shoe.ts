@@ -39,11 +39,12 @@ export default class Shoe extends Deck {
     public init(): void {
         super.init()
         for (let i = 1; i < this.numDecks; ++i)
-            this.addDeck(new Deck())
+            this.addShuffledDeck(new Deck())
     }
 
-    private addDeck(deck: Deck) {
+    private addShuffledDeck(deck: Deck) {
         deck.init()
+        deck.shuffle()
         while (!deck.isEmpty())
             this.cardsNotDealt.push(deck.dealCard())
     }

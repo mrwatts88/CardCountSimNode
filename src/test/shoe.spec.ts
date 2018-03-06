@@ -34,7 +34,19 @@ describe("Test Shoe", () => {
         expect(shoe.isEmpty()).to.equal(true)
     })
 
-    it("shuffle should shuffle the cards", () => {
+    it("should shuffle the cards", () => {
+        // TODO
+    })
+
+    it("test calcTrueCount()", () => {
+        // TODO
+    })
+
+    it("test hasReachedCut()", () => {
+        // TODO
+    })
+
+    it("test addShuffeldDeck()", () => {
         // TODO
     })
 })
