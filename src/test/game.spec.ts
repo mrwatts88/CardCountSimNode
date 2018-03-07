@@ -27,13 +27,13 @@ describe("Test Game", () => {
     it("should add Player", () => {
         // TODO: Make sure player isn't in another game
         game1.addPlayer(player1)
-        expect(game1.getPlayerAt(0)).to.equal(player1)
-        expect(game1.numPlayers()).to.equal(1)
+        expect(game1.getPlayerAt(1)).to.equal(player1)
+        expect(game1.getNumPlayers()).to.equal(1)
     })
 
     it("should place bets", () => {
         game1.placeBets()
-        expect(game1.getPlayerAt(0).currentBet).to.equal(1)
+        expect(game1.getPlayerAt(1).currentBet).to.equal(1)
     })
 
     it("test dealRound", () => {

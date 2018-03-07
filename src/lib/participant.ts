@@ -41,4 +41,5 @@ export default abstract class Participant {
         return (this.currentHand[0].value === 1 && this.currentHand[1].valAsInt() === 10) ||
             (this.currentHand[1].value === 1 && this.currentHand[0].valAsInt() === 10)
     }
+
 }

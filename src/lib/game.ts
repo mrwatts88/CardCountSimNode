@@ -6,17 +6,20 @@ import { IRuleSet } from "./rules"
 import Shoe from "./shoe"
 
 export default class Game {
-    private activePlayers: Player[]
+    private activePlayers: Map<number, Player>
+    private numPlayers: number
     private dealer: Dealer
     private shoe: Shoe
     private roundIsOver: boolean
-    private bustedPlayers: Player[]
+    private bustedPlayers: Map<number, Player>
     private ruleSet: IRuleSet
 
     constructor(ruleSet: IRuleSet) {
+        this.numPlayers = 0
         this.ruleSet = ruleSet
         this.roundIsOver = true
-        this.activePlayers = []
+        this.activePlayers = new Map<number, Player>()
+        this.bustedPlayers = new Map<number, Player>()
         this.dealer = new Dealer()
         this.shoe = new Shoe(NUMBER_OF_DECKS, CARDS_BEFORE_CUT, hiLoCountMap)
         this.shoe.init()
@@ -29,26 +32,30 @@ export default class Game {
     public addPlayer(player: Player): void {
         if (!this.roundIsOver)
             throw new Error("Cannot add player during round.")
-
-        this.activePlayers.push(player)
+        ++this.numPlayers
+        this.activePlayers.set(this.numPlayers, player)
     }
 
     // This is used only during card counting simulation, not for creating a blackjack playing app
     public placeBets(): void {
         this.roundIsOver = false
-        for (const player of this.activePlayers)
-            player.placeBet(this.shoe.calcTrueCount())
+        const trueCount = this.shoe.calcTrueCount()
+        this.activePlayers.forEach((p) => {
+            p.placeBet(trueCount)
+        })
     }
 
     public dealRound(): void {
         // TODO: Check that all active players have placed a bet
-        for (const player of this.activePlayers)
-            player.addCardToHand(this.shoe.dealCard())
+        this.activePlayers.forEach((p) => {
+            p.addCardToHand(this.shoe.dealCard())
+        })
 
         this.dealer.addCardToHand(this.shoe.dealCard())
 
-        for (const player of this.activePlayers)
-            player.addCardToHand(this.shoe.dealCard())
+        this.activePlayers.forEach((p) => {
+            p.addCardToHand(this.shoe.dealCard())
+        })
 
         this.dealer.addCardToHand(this.shoe.dealCard())
     }
@@ -57,52 +64,55 @@ export default class Game {
     // placeInsuranceBets() will only be used in simulation, resolve will also be used in game-playing app
     public handleInsurance(): void {
         if (this.dealer.getCardAt(0).value !== 1) return
-        for (const player of this.activePlayers)
-            if (player.usingIll18() && this.shoe.calcTrueCount() >= Ill18Indices.insurance)
+
+        this.activePlayers.forEach((p) => {
+            if (p.usingIll18() && this.shoe.calcTrueCount() >= Ill18Indices.insurance)
                 switch (this.dealer.getCardAt(1).value) {
                     case 10:
                     case 11:
                     case 12:
                     case 13:
-                        player.bankroll += player.currentBet
+                        p.bankroll += p.currentBet
                         break
                     default:
-                        player.bankroll -= (player.currentBet / 2)
+                        p.bankroll -= (p.currentBet / 2)
                         break
                 }
+        })
     }
 
     // Only used in simulation
     // TODO: What to do about moving players to bustedPlayers if not using simulation???
     public playersPlayRound(): void {
-        for (const player of this.activePlayers) {
-            if (player.hasBlackjack()) {
-                player.resolveBet(BLACKJACK_MULTIPLIER)
-                player.bustedOrDiscarded = true
+        this.activePlayers.forEach((p) => {
+            if (p.hasBlackjack()) {
+                p.resolveBet(BLACKJACK_MULTIPLIER)
+                p.bustedOrDiscarded = true
             } else {
                 let takeAction = true
                 while (takeAction) {
                     const action: number =
-                        player.decideAction(this.shoe.calcTrueCount(), this.dealer.getCardAt(0).value)
+                        p.decideAction(this.shoe.calcTrueCount(), this.dealer.getCardAt(0).value)
                     let newCard: Card
                     switch (action) {
                         case Participant.actions.DOUBLE:
-                            player.addCardToHand(this.shoe.dealCard())
-                            player.bankroll -= player.currentBet
-                            player.currentBet *= 2
+                            p.addCardToHand(this.shoe.dealCard())
+                            p.bankroll -= p.currentBet
+                            p.currentBet *= 2
                             takeAction = false
                             break
                         case Participant.actions.HIT:
                             newCard = this.shoe.dealCard()
-                            player.addCardToHand(newCard)
-                            if (player.calcHandTotal() > 21) {
-                                player.bustedOrDiscarded = true
+                            p.addCardToHand(newCard)
+                            if (p.calcHandTotal() > 21) {
+                                p.bustedOrDiscarded = true
                                 takeAction = false
                                 break
                             }
                             break
                         case Participant.actions.SPLIT:
                             // TODO
+                            console.log("splitting")
                             break
                         case Participant.actions.STAND:
                             takeAction = false
@@ -110,15 +120,19 @@ export default class Game {
                     }
                 }
             }
+        })
 
-            for (let i = this.activePlayers.length - 1; i >= 0; --i)
-                if (this.activePlayers[i].bustedOrDiscarded)
-                    this.bustedPlayers.push(this.activePlayers.splice(i, 1)[0])
-        }
+        // Move busted players to bustedPlayers
+        this.activePlayers.forEach((p, k) => {
+            if (p.bustedOrDiscarded) {
+                this.bustedPlayers.set(k, p)
+                this.activePlayers.delete(k)
+            }
+        })
     }
 
     public dealerPlayRound(): void {
-        if (this.activePlayers.length <= 0) return
+        if (this.activePlayers.size <= 0) return
         let takeAction = true
         while (takeAction) {
             const action: number = this.dealer.decideAction(this.ruleSet.h17)
@@ -141,7 +155,7 @@ export default class Game {
     }
 
     public resolveBets(): void {
-        for (const p of this.activePlayers)
+        this.activePlayers.forEach((p) => {
             if (this.dealer.bustedOrDiscarded)
                 p.resolveBet(1)
             else {
@@ -153,16 +167,19 @@ export default class Game {
                 else
                     p.resolveBet(0.5)
             }
+        })
     }
 
-    public numPlayers(): number {
-        return this.activePlayers.length
+    public getNumPlayers(): number {
+        return this.numPlayers
     }
 
     public getPlayerAt(i: number): Player {
-        if (this.activePlayers.length <= i)
+        if (i < 1)
+            throw new Error("Invalid index for player")
+        if (this.activePlayers.size < i)
             throw new Error("No player here")
-        return this.activePlayers[i]
+        return this.activePlayers.get(i)
     }
 
     public getDealer(): Dealer {
@@ -171,6 +188,14 @@ export default class Game {
 
     public cleanUp(): void {
         // TODO
+        this.bustedPlayers.forEach((p, k) => {
+            this.activePlayers.set(k, p)
+            this.bustedPlayers.delete(k)
+        })
+
+        this.activePlayers.forEach((p) => {
+            // p
+        })
         this.roundIsOver = true
     }
 }
