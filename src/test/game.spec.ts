@@ -40,8 +40,12 @@ describe("Test Game", () => {
         game1.dealRound()
     })
 
-    it("test handleInsurance", () => {
-        game1.handleInsurance()
+    it("test placeInsuranceBets()", () => {
+        game1.placeInsuranceBets()
+    })
+
+    it("test resolveInsurance()", () => {
+        game1.resolveInsurance()
     })
 
     it("test playersPlayRound", () => {

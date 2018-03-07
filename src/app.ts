@@ -1,14 +1,16 @@
 import Game from "./lib/game"
 import Player from "./lib/player"
+import { SIX_DECK_H17_DAS_NO_SURR } from "./lib/strategy"
 
 export class Main {
     constructor() {
-        const game = new Game()
-        const player = new Player([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], false)
+        const game = new Game({ h17: true })
+        const player = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         game.addPlayer(player)
         game.placeBets()
         game.dealRound()
-        game.handleInsurance()
+        game.placeInsuranceBets()
+        game.resolveInsurance()
 
         if (!game.getDealer().hasBlackjack()) {
             // After this method returns, all the players have the correct current bet and a hand total.

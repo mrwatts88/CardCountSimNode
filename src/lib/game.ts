@@ -22,7 +22,7 @@ export default class Game {
         this.bustedPlayers = new Map<number, Player>()
         this.dealer = new Dealer()
         this.shoe = new Shoe(NUMBER_OF_DECKS, CARDS_BEFORE_CUT, hiLoCountMap)
-        this.shoe.init()
+        this.shoe.shuffle()
     }
 
     public shuffleShoe(): void {
@@ -40,20 +40,20 @@ export default class Game {
     public placeBets(): void {
         this.roundIsOver = false
         const trueCount = this.shoe.calcTrueCount()
-        this.activePlayers.forEach((p) => {
+        this.activePlayers.forEach(p => {
             p.placeBet(trueCount)
         })
     }
 
     public dealRound(): void {
         // TODO: Check that all active players have placed a bet
-        this.activePlayers.forEach((p) => {
+        this.activePlayers.forEach(p => {
             p.addCardToHand(this.shoe.dealCard())
         })
 
         this.dealer.addCardToHand(this.shoe.dealCard())
 
-        this.activePlayers.forEach((p) => {
+        this.activePlayers.forEach(p => {
             p.addCardToHand(this.shoe.dealCard())
         })
 
@@ -62,29 +62,30 @@ export default class Game {
 
     // TODO: Split into placeInsuranceBets() and resolveInsuranceBets()
     // placeInsuranceBets() will only be used in simulation, resolve will also be used in game-playing app
-    public handleInsurance(): void {
+    public placeInsuranceBets(): void {
         if (this.dealer.getCardAt(0).value !== 1) return
 
-        this.activePlayers.forEach((p) => {
+        this.activePlayers.forEach(p => {
             if (p.usingIll18() && this.shoe.calcTrueCount() >= Ill18Indices.insurance)
-                switch (this.dealer.getCardAt(1).value) {
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                        p.bankroll += p.currentBet
-                        break
-                    default:
-                        p.bankroll -= (p.currentBet / 2)
-                        break
-                }
+                p.currentInsuranceBet = 0.5 * p.currentBet
+        })
+    }
+
+    public resolveInsurance(): void {
+        if (this.dealer.getCardAt(0).value !== 1) return
+
+        this.activePlayers.forEach(p => {
+            if (this.dealer.getCardAt(1).valAsInt() === 10)
+                p.bankroll += p.currentInsuranceBet
+
+            p.currentInsuranceBet = 0
         })
     }
 
     // Only used in simulation
     // TODO: What to do about moving players to bustedPlayers if not using simulation???
     public playersPlayRound(): void {
-        this.activePlayers.forEach((p) => {
+        this.activePlayers.forEach(p => {
             if (p.hasBlackjack()) {
                 p.resolveBet(BLACKJACK_MULTIPLIER)
                 p.bustedOrDiscarded = true
@@ -92,7 +93,7 @@ export default class Game {
                 let takeAction = true
                 while (takeAction) {
                     const action: number =
-                        p.decideAction(this.shoe.calcTrueCount(), this.dealer.getCardAt(0).value)
+                        p.decideAction(this.shoe.calcTrueCount(), this.dealer.getCardAt(0).valAsInt())
                     let newCard: Card
                     switch (action) {
                         case Participant.actions.DOUBLE:
@@ -113,6 +114,7 @@ export default class Game {
                         case Participant.actions.SPLIT:
                             // TODO
                             console.log("splitting")
+                            takeAction = false
                             break
                         case Participant.actions.STAND:
                             takeAction = false
@@ -155,7 +157,7 @@ export default class Game {
     }
 
     public resolveBets(): void {
-        this.activePlayers.forEach((p) => {
+        this.activePlayers.forEach(p => {
             if (this.dealer.bustedOrDiscarded)
                 p.resolveBet(1)
             else {
@@ -187,15 +189,17 @@ export default class Game {
     }
 
     public cleanUp(): void {
-        // TODO
         this.bustedPlayers.forEach((p, k) => {
             this.activePlayers.set(k, p)
             this.bustedPlayers.delete(k)
         })
 
-        this.activePlayers.forEach((p) => {
-            // p
+        this.activePlayers.forEach(p => {
+            p.clearHand()
+            p.currentBet = 0
         })
+
+        this.dealer.clearHand()
         this.roundIsOver = true
     }
 }

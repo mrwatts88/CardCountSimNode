@@ -16,8 +16,8 @@ describe("Test Dealer", () => {
         card1 = new Card(0, 1 + Math.floor(Math.random() * 13))
         card2 = new Card(0, 1 + Math.floor(Math.random() * 13))
 
-        // All possible cards
-        card3 = new Card(0, 1 + Math.floor(Math.random() * 13))
+        // One ace at most
+        card3 = new Card(0, 2 + Math.floor(Math.random() * 12))
         card4 = new Card(0, 1 + Math.floor(Math.random() * 13))
 
         // Dealer 3
@@ -70,7 +70,7 @@ describe("Test Dealer", () => {
         // TODO
     })
 
-    it("test calcHandTotal (2 cards)", () => {
+    it("test calcHandTotal (at most one Ace) (2 cards)", () => {
         expect(dealer2.calcHandTotal()).to.equal(card3.valAsInt() + card4.valAsInt())
     })
 

@@ -25,7 +25,7 @@ export default class Shoe extends Deck {
         // Based on closest number of 1/4 decks left in the undealt shoe.
         // Result if truncated because a true count must be reached before betting...
         // according to that count. (e.g. TC = 1.99 = 1)
-        return this.runningCount / Math.round(this.cardsNotDealt.length / 13)
+        return this.runningCount / Math.round(this.cardsNotDealt.length / 13) // Cards not dealt cannot be less than 13
     }
 
     public setCountMap(countMap: object) {

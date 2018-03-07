@@ -42,4 +42,8 @@ export default abstract class Participant {
             (this.currentHand[1].value === 1 && this.currentHand[0].valAsInt() === 10)
     }
 
+    public clearHand(): void {
+        this.currentHand = []
+    }
+
 }

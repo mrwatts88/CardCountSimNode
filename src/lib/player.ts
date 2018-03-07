@@ -5,6 +5,7 @@ import { IStrategy } from "./strategy"
 export default class Player extends Participant {
     public bankroll: number
     public currentBet: number
+    public currentInsuranceBet: number
     private bettingRamp: Map<number, number>
     private ill18: boolean
     private basicStrategy: IStrategy
@@ -37,10 +38,10 @@ export default class Player extends Participant {
         this.bankroll += multiplier === -1 ? 0 : (this.currentBet * (multiplier + 1))
     }
 
-    public decideAction(count: number, dealerUpcardVal: number): number {
+    public decideAction(count: number, dealerUpcardValAsInt: number): number {
         // TODO: implement basic strategy here, take into account ill18
         if (this.currentHand.length === 2 && this.currentHand[0].valAsInt() === this.currentHand[1].valAsInt())
-            return this.basicStrategy.PAIRS[dealerUpcardVal][this.currentHand[0].valAsInt()]
+            return this.basicStrategy.PAIRS[dealerUpcardValAsInt][this.currentHand[0].valAsInt()]
         else
             return Participant.actions.STAND
     }
