@@ -19,6 +19,7 @@ export default class Player extends Participant {
         for (let i = 1; i < 11; ++i)
             this.bettingRamp.set(i, bettingRamp[i - 1])
         this.currentBet = 0
+        this.currentInsuranceBet = 0
         this.bankroll = 0
     }
 
@@ -50,9 +51,10 @@ export default class Player extends Participant {
             action = this.basicStrategy.HARD[dealerUpcardValAsInt][this.currentHand().calcHandTotal()]
         else
             action = Participant.actions.STAND
+        if (action === Participant.actions.DOUBLE)
+            this.currentHand().bet *= 2
         if (action === Participant.actions.DOUBLE || action === Participant.actions.STAND)
             this.currentHandIndex = this.currentHandIndex + 1 >= this.hands.length ? null : this.currentHandIndex + 1
-
         return action
     }
 }

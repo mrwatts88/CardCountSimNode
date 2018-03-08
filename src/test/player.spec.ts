@@ -62,10 +62,6 @@ describe("Test Player", () => {
         expect(player1.currentHand().getCardAt(1)).to.equal(card2)
     })
 
-    it("test decideAction", () => {
-        // TODO
-    })
-
     it("test calcHandTotal (2 cards, at most one ace)", () => {
         expect(player2.currentHand().calcHandTotal()).to.equal(card3.valAsInt() + card4.valAsInt())
     })

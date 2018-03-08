@@ -159,16 +159,20 @@ export default class Game {
             for (let i = 0; i < p.hands.length; ++i) {
                 if (p.hands[i].bustedOrDiscarded)
                     continue
-                if (this.dealer.currentHand().bustedOrDiscarded)
+
+                if (this.dealer.hasBlackjack()) {
+                    p.hands[i].hasBlackjack() ? p.resolveBet(0, p.hands[i].bet) : p.resolveBet(-1, p.hands[i].bet)
+                } else if (this.dealer.currentHand().bustedOrDiscarded) {
                     p.resolveBet(1, p.hands[i].bet)
+                }
                 else {
                     const diff = p.hands[i].calcHandTotal() - this.dealer.currentHand().calcHandTotal()
                     if (diff > 0)
                         p.resolveBet(1, p.hands[i].bet)
                     else if (diff < 0)
-                        p.resolveBet(0, p.hands[i].bet)
+                        p.resolveBet(-1, p.hands[i].bet)
                     else
-                        p.resolveBet(0.5, p.hands[i].bet)
+                        p.resolveBet(0, p.hands[i].bet)
                 }
             }
         })

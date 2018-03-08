@@ -62,8 +62,8 @@ describe("Test Dealer", () => {
     })
 
     it("test addCardToInitialHand", () => {
-        expect(dealer1.currentHand().getCardAt(0) === card1)
-        expect(dealer1.currentHand().getCardAt(1) === card2)
+        expect(dealer1.getCardAt(0) === card1)
+        expect(dealer1.getCardAt(1) === card2)
     })
 
     it("test decideAction", () => {
