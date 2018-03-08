@@ -35,31 +35,31 @@ describe("Test Player", () => {
         card12 = new Card(0, 1)
 
         player1 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        player1.addCardToHand(card1)
-        player1.addCardToHand(card2)
+        player1.addCardToInitialHand(card1)
+        player1.addCardToInitialHand(card2)
 
         player2 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        player2.addCardToHand(card3)
-        player2.addCardToHand(card4)
+        player2.addCardToInitialHand(card3)
+        player2.addCardToInitialHand(card4)
 
         player3 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        player3.addCardToHand(card5)
-        player3.addCardToHand(card6)
-        player3.addCardToHand(card7)
-        player3.addCardToHand(card8)
+        player3.addCardToInitialHand(card5)
+        player3.addCardToInitialHand(card6)
+        player3.addCardToInitialHand(card7)
+        player3.addCardToInitialHand(card8)
 
         player4 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        player4.addCardToHand(card9)
-        player4.addCardToHand(card10)
-        player4.addCardToHand(card11)
-        player4.addCardToHand(card12)
+        player4.addCardToInitialHand(card9)
+        player4.addCardToInitialHand(card10)
+        player4.addCardToInitialHand(card11)
+        player4.addCardToInitialHand(card12)
 
         player5 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     })
 
-    it("test addCardToHand", () => {
-        expect(player1.getCardAt(0)).to.equal(card1)
-        expect(player1.getCardAt(1)).to.equal(card2)
+    it("test addCardToInitialHand", () => {
+        expect(player1.currentHand().getCardAt(0)).to.equal(card1)
+        expect(player1.currentHand().getCardAt(1)).to.equal(card2)
     })
 
     it("test decideAction", () => {
@@ -67,12 +67,12 @@ describe("Test Player", () => {
     })
 
     it("test calcHandTotal (2 cards, at most one ace)", () => {
-        expect(player2.calcHandTotal()).to.equal(card3.valAsInt() + card4.valAsInt())
+        expect(player2.currentHand().calcHandTotal()).to.equal(card3.valAsInt() + card4.valAsInt())
     })
 
     it("test calcHandTotal (more than 2 cards, at least one Ace)", () => {
-        expect(player3.calcHandTotal()).to.equal(19)
-        expect(player4.calcHandTotal()).to.equal(14)
+        expect(player3.currentHand().calcHandTotal()).to.equal(19)
+        expect(player4.currentHand().calcHandTotal()).to.equal(14)
     })
 
     it("test placeBet", () => {
@@ -82,12 +82,12 @@ describe("Test Player", () => {
 
     it("test resolveBet()", () => {
         // TODO
-        player5.resolveBet(1)
+        player5.resolveBet(1, player5.currentHand().bet)
     })
 
     it("should split 3s against 7 or less", () => {
-        player5.addCardToHand(new Card(0, 3))
-        player5.addCardToHand(new Card(3, 3))
+        player5.addCardToInitialHand(new Card(0, 3))
+        player5.addCardToInitialHand(new Card(3, 3))
         expect(player5.decideAction(2, 2)).to.equal(SPLIT)
         expect(player5.decideAction(2, 3)).to.equal(SPLIT)
         expect(player5.decideAction(2, 4)).to.equal(SPLIT)

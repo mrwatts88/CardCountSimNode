@@ -1,49 +1,27 @@
 import Card from "./card"
+import Hand from "./hand"
 
 enum Action { STAND, HIT, DOUBLE, SPLIT, DS }
 
 export default abstract class Participant {
     public static actions = Action
-    public bustedOrDiscarded: boolean
-    protected currentHand: Card[]
+    public hands: Hand[]
+    public currentHandIndex: number
 
     constructor() {
-        this.currentHand = []
-        this.bustedOrDiscarded = false
+        this.hands = [new Hand()]
+        this.currentHandIndex = 0
     }
 
-    public calcHandTotal(): number {
-        let total: number = this.currentHand.reduce((prev, cur) => {
-            return prev + cur.valAsInt()
-        }, 0)
-
-        const mightHaveAce: boolean = true
-        if (total > 21)
-            for (const card of this.currentHand)
-                if (card.value === 1) {
-                    total -= 10
-                    if (total < 22) break
-                }
-
-        return total
-    }
-
-    public addCardToHand(card: Card): void {
-        this.currentHand.push(card)
-    }
-
-    public getCardAt(position: number): Card {
-        return this.currentHand[position]
+    public currentHand(): Hand {
+        return this.hands[this.currentHandIndex]
     }
 
     public hasBlackjack(): boolean {
-        if (this.currentHand.length !== 2) return false
-        return (this.currentHand[0].value === 1 && this.currentHand[1].valAsInt() === 10) ||
-            (this.currentHand[1].value === 1 && this.currentHand[0].valAsInt() === 10)
+        return this.hands[0].hasBlackjack()
     }
 
-    public clearHand(): void {
-        this.currentHand = []
+    public addCardToInitialHand(card: Card) {
+        this.hands[0].addCardToHand(card)
     }
-
 }

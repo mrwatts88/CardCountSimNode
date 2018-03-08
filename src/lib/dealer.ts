@@ -7,13 +7,22 @@ export default class Dealer extends Participant {
     }
 
     public decideAction(h17: boolean): number {
-        const total = this.calcHandTotal()
-
+        const total = this.currentHand().calcHandTotal()
         if (total > 17)
             return Participant.actions.STAND
         else if (total < 17)
             return Participant.actions.HIT
         else
-            return h17 ? Participant.actions.HIT : Participant.actions.STAND
+            if (!h17)
+                return Participant.actions.STAND
+            else
+                if (!this.currentHand().hasAce())
+                    return Participant.actions.STAND
+                else
+                    return this.currentHand().isSoft() ? Participant.actions.HIT : Participant.actions.STAND
+    }
+
+    public calcHandTotal(): number {
+        return this.currentHand().calcHandTotal()
     }
 }

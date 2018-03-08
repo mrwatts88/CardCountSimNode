@@ -58,10 +58,11 @@ describe("Test Game", () => {
 
     it("test resolveBets", () => {
         game1.resolveBets()
+        console.log(game1.dealer.hands[0])
+        console.log(game1.activePlayers.get(1).hands[0])
     })
 
     it("test cleanUp", () => {
         game1.cleanUp()
     })
-
 })

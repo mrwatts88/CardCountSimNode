@@ -37,33 +37,33 @@ describe("Test Dealer", () => {
         card14 = new Card(0, 10 + Math.floor(Math.random() * 4))
 
         dealer1 = new Dealer()
-        dealer1.addCardToHand(card1)
-        dealer1.addCardToHand(card2)
+        dealer1.addCardToInitialHand(card1)
+        dealer1.addCardToInitialHand(card2)
 
         dealer2 = new Dealer()
-        dealer2.addCardToHand(card3)
-        dealer2.addCardToHand(card4)
+        dealer2.addCardToInitialHand(card3)
+        dealer2.addCardToInitialHand(card4)
 
         dealer3 = new Dealer()
-        dealer3.addCardToHand(card5)
-        dealer3.addCardToHand(card6)
-        dealer3.addCardToHand(card7)
-        dealer3.addCardToHand(card8)
+        dealer3.addCardToInitialHand(card5)
+        dealer3.addCardToInitialHand(card6)
+        dealer3.addCardToInitialHand(card7)
+        dealer3.addCardToInitialHand(card8)
 
         dealer4 = new Dealer()
-        dealer4.addCardToHand(card9)
-        dealer4.addCardToHand(card10)
-        dealer4.addCardToHand(card11)
-        dealer4.addCardToHand(card12)
+        dealer4.addCardToInitialHand(card9)
+        dealer4.addCardToInitialHand(card10)
+        dealer4.addCardToInitialHand(card11)
+        dealer4.addCardToInitialHand(card12)
 
         dealer5 = new Dealer()
-        dealer5.addCardToHand(card13)
-        dealer5.addCardToHand(card14)
+        dealer5.addCardToInitialHand(card13)
+        dealer5.addCardToInitialHand(card14)
     })
 
-    it("test addCardToHand", () => {
-        expect(dealer1.getCardAt(0) === card1)
-        expect(dealer1.getCardAt(1) === card2)
+    it("test addCardToInitialHand", () => {
+        expect(dealer1.currentHand().getCardAt(0) === card1)
+        expect(dealer1.currentHand().getCardAt(1) === card2)
     })
 
     it("test decideAction", () => {

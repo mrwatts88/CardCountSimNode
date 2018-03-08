@@ -1,6 +1,7 @@
 import Card from "./card"
 import Participant from "./participant"
 import { IStrategy } from "./strategy"
+import Hand from "./hand";
 
 export default class Player extends Participant {
     public bankroll: number
@@ -29,20 +30,29 @@ export default class Player extends Participant {
         this.currentBet = this.bettingRamp.get(count)
         if (this.currentBet === undefined)
             this.currentBet = 1
-
+        this.currentHand().bet = this.currentBet
         this.bankroll -= this.currentBet
     }
 
-    public resolveBet(multiplier) {
+    public resolveBet(multiplier: number, bet: number): void {
         // -1 = loss, 0 = push, 1 = even money win, 1.2 = 6 to 5, 1.5 = 3 to 2
-        this.bankroll += multiplier === -1 ? 0 : (this.currentBet * (multiplier + 1))
+        this.bankroll += multiplier === -1 ? 0 : (bet * (multiplier + 1))
     }
 
     public decideAction(count: number, dealerUpcardValAsInt: number): number {
         // TODO: implement basic strategy here, take into account ill18
-        if (this.currentHand.length === 2 && this.currentHand[0].valAsInt() === this.currentHand[1].valAsInt())
-            return this.basicStrategy.PAIRS[dealerUpcardValAsInt][this.currentHand[0].valAsInt()]
+        if (this.currentHandIndex === null)
+            throw new Error("There is no current hand to take action on")
+        let action;
+        if (this.currentHand().isPair())
+            action = this.basicStrategy.PAIRS[dealerUpcardValAsInt][this.currentHand().getCardAt(0).valAsInt()]
+        else if (!this.currentHand().hasAce())
+            action = this.basicStrategy.HARD[dealerUpcardValAsInt][this.currentHand().calcHandTotal()]
         else
-            return Participant.actions.STAND
+            action = Participant.actions.STAND
+        if (action === Participant.actions.DOUBLE || action === Participant.actions.STAND)
+            this.currentHandIndex = this.currentHandIndex + 1 >= this.hands.length ? null : this.currentHandIndex + 1
+
+        return action
     }
 }
