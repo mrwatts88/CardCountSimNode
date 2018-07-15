@@ -84,9 +84,7 @@ describe("Test Game", () => {
     it("test resolveBets", () => {
         game1.resolveBets()
         game2.resolveBets()
-        console.log(game1.dealer.hands[0])
-        console.log(game1.activePlayers.get(1).hands)
-        console.log(game1.activePlayers.get(1))
+
     })
 
     it("test cleanUp", () => {
