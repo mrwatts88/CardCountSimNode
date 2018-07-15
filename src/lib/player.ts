@@ -31,15 +31,19 @@ export default class Player extends Participant {
     if (this.currentBet === undefined) this.currentBet = 1
     this.currentHand().bet = this.currentBet
     this.bankroll -= this.currentBet
+    console.info(
+      `Player's bet: ${this.currentBet} - Bankroll after bet: ${this.bankroll}`
+    )
   }
 
   public resolveBet(multiplier: number, bet: number): void {
     // -1 = loss, 0 = push, 1 = even money win, 1.2 = 6 to 5, 1.5 = 3 to 2
     this.bankroll += multiplier === -1 ? 0 : bet * (multiplier + 1)
+    console.info(`Player's Bankroll after bet resolution: ${this.bankroll}`)
   }
 
   public decideAction(count: number, dealerUpcardValAsInt: number): number {
-    // TODO: Take into account ill18
+    // TODO: Take into account ill18 and DS action type
     if (this.currentHandIndex === null)
       throw new Error('There is no current hand to take action on')
     let action
@@ -61,6 +65,32 @@ export default class Player extends Participant {
         this.currentHand().calcHandTotal()
       ]
     if (action === Participant.actions.DOUBLE) this.currentHand().bet *= 2
+
+    let actionString: string
+    switch (action) {
+      case Participant.actions.SPLIT:
+        actionString = 'splitting'
+        break
+      case Participant.actions.DOUBLE:
+        actionString = 'doubling'
+        break
+      case Participant.actions.STAND:
+        actionString = 'standing'
+        break
+      case Participant.actions.HIT:
+        actionString = 'hitting'
+        break
+      case Participant.actions.DS:
+        actionString = 'doubling/splitting'
+        break
+      default:
+        break
+    }
+
+    console.info(
+      `Player's hand: ${this.currentHand().toString()}- ${actionString} with ${this.currentHand().calcHandTotal()}`
+    )
+
     if (
       action === Participant.actions.DOUBLE ||
       action === Participant.actions.STAND
@@ -69,6 +99,7 @@ export default class Player extends Participant {
         this.currentHandIndex + 1 >= this.hands.length
           ? null
           : this.currentHandIndex + 1
+
     return action
   }
 }

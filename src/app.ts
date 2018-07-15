@@ -19,27 +19,36 @@ export class Main {
     ])
 
     game.addPlayer(player)
-    game.placeBets()
-    game.dealRound()
-    game.placeInsuranceBets()
-    game.resolveInsurance()
 
-    for (let i = 1; i <= game.getNumPlayers(); ++i) {
-      console.info(game.getPlayerAt(i).currentHand())
-    }
+    // while (!game.hasReachedCutCard()) {
+    console.info('Placing bets...')
+    game.placeBets()
+    console.info('Dealing round...')
+    game.dealRound()
+    console.info('Placing insurance...')
+    game.placeInsuranceBets()
+    console.info('Resolving insurance...')
+    game.resolveInsurance()
 
     if (!game.getDealer().hasBlackjack()) {
       // After this method returns, all the players have the correct current bet and a hand total.
       // All busted players or ones already paid for a blackjack will be moved from the activePlayers
       // array to the bustedPlayers array.
+      console.info('Players playing round...')
       game.playersPlayRound()
       // After dealerPlayRound returns, the dealer will have a hand total and a busted status
+      console.info('Dealer playing round...')
       game.dealerPlayRound()
+      console.info('Resolving bets...')
       game.resolveBets()
-    }
+    } else game.getActivePlayers().forEach(p => p.resolveBet(-1, 0))
+
     // Everyone has placed bets, gotten cards, played their hands, and been paid.
     // Restore the status to the state before the hand.
+    console.info('Cleaning up round...')
     game.cleanUp()
+    console.info('\n\n')
+    // }
   }
 }
 

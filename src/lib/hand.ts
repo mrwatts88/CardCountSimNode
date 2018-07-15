@@ -73,4 +73,10 @@ export default class Hand {
   public clearHand(): void {
     this.hand = []
   }
+
+  public toString(): string {
+    let str = ''
+    for (const card of this.hand) str += `${card.toString()}, `
+    return str
+  }
 }
