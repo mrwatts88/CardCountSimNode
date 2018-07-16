@@ -3,18 +3,18 @@ import Deck from './deck'
 
 export default class Shoe extends Deck {
   public numDecks: number
-  public cardsBeforeCut: number
+  public cardsAfterCut: number
   public runningCount: number
   private countValueMapping: object
 
   constructor(
     numDecks: number,
-    cardsBeforeCut: number,
+    cardsAfterCut: number,
     countValueMapping: object
   ) {
     super()
     this.numDecks = numDecks
-    this.cardsBeforeCut = cardsBeforeCut
+    this.cardsAfterCut = cardsAfterCut
     this.runningCount = 0
     this.countValueMapping = countValueMapping
   }
@@ -43,8 +43,12 @@ export default class Shoe extends Deck {
     this.countValueMapping = countMap
   }
 
+  public getCountMap(): object {
+    return this.countValueMapping
+  }
+
   public hasReachedCutCard(): boolean {
-    const reached: boolean = this.cardsDealt.length >= this.cardsBeforeCut
+    const reached: boolean = this.cardsNotDealt.length <= this.cardsAfterCut
     if (reached)
       console.info(
         `Reached the cut card with ${this.cardsNotDealt.length} cards left.`
@@ -52,9 +56,9 @@ export default class Shoe extends Deck {
     return reached
   }
 
-  public init(): void {
-    super.init()
-    for (let i = 1; i < this.numDecks; ++i) this.addShuffledDeck(new Deck())
+  public shuffle(): void {
+    for (let i = 0; i < this.numDecks; ++i) this.addShuffledDeck(new Deck())
+    super.shuffle()
   }
 
   private addShuffledDeck(deck: Deck) {

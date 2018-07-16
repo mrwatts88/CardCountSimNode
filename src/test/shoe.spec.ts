@@ -1,6 +1,5 @@
-import { expect } from 'chai'
-import * as _ from 'lodash'
 import 'mocha'
+import { expect } from 'chai'
 import Card from '../lib/card'
 import Shoe from '../lib/shoe'
 
@@ -9,7 +8,7 @@ describe('Test Shoe', () => {
 
   beforeEach(() => {
     shoe = new Shoe(6, 52, hiLoCountMap)
-    shoe.init()
+    shoe.shuffle()
   })
 
   it('should initilize', () => {
@@ -19,7 +18,6 @@ describe('Test Shoe', () => {
   it('should deal a Card object', () => {
     const card = shoe.dealCard()
     expect(card).to.be.instanceof(Card)
-    expect(_.isEqual(card, new Card(0, 1))).to.equal(true)
   })
 
   it('should deal 312 cards', () => {
@@ -28,26 +26,37 @@ describe('Test Shoe', () => {
       shoe.dealCard()
       ++i
     }
-
-    shoe.print()
     expect(i).to.equal(312)
     expect(shoe.isEmpty()).to.equal(true)
   })
 
-  it('should shuffle the cards', () => {
-    // TODO
+  it('should set countMap', () => {
+    shoe.setCountMap(hiLoCountMap)
+    expect(shoe.getCountMap()[5]).to.equal(1)
   })
 
   it('test calcTrueCount()', () => {
     // TODO
   })
 
-  it('test hasReachedCutCard()', () => {
-    // TODO
+  it('should have reached cut card', () => {
+    let i = 0
+    while (i < 260) {
+      shoe.dealCard()
+      ++i
+    }
+
+    expect(shoe.hasReachedCutCard()).to.equal(true)
   })
 
-  it('test addShuffeldDeck()', () => {
-    // TODO
+  it('should NOT have reached cut card', () => {
+    let i = 0
+    while (i < 259) {
+      shoe.dealCard()
+      ++i
+    }
+
+    expect(shoe.hasReachedCutCard()).to.equal(false)
   })
 })
 

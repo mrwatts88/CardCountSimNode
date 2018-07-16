@@ -31,7 +31,7 @@ export default class Hand {
     return this.calcHandTotal() != this.calcHandTotalWithAcesAsOnes()
   }
 
-  public calcHandTotalWithAcesAsOnes(): number {
+  private calcHandTotalWithAcesAsOnes(): number {
     let total: number = this.hand.reduce((prev, cur) => {
       return prev + cur.valAsInt()
     }, 0)

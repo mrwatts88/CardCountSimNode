@@ -8,6 +8,7 @@ export default class Dealer extends Participant {
 
   public decideAction(h17: boolean): number {
     const total = this.calcHandTotal()
+    if (total > 21) throw 'Total is over 21, should not be deciding action.'
     if (total > 17) {
       console.info(`Dealer standing with: ${total}`)
       return Participant.actions.STAND
@@ -17,16 +18,13 @@ export default class Dealer extends Participant {
     } else if (!h17) {
       console.info(`Dealer standing with: ${total}`)
       return Participant.actions.STAND
-    } else if (!this.currentHand().hasAce()) {
+    } else if (!this.hasAce()) {
       console.info(`Dealer standing with: ${total}`)
       return Participant.actions.STAND
     } else {
-      if (this.currentHand().isSoft())
-        console.info(`Dealer hitting with: ${total}`)
+      if (this.isSoft()) console.info(`Dealer hitting with: ${total}`)
       else console.info(`Dealer standing with: ${total}`)
-      return this.currentHand().isSoft()
-        ? Participant.actions.HIT
-        : Participant.actions.STAND
+      return this.isSoft() ? Participant.actions.HIT : Participant.actions.STAND
     }
   }
 
