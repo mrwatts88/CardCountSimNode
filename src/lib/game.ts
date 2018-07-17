@@ -41,7 +41,6 @@ export default class Game {
     this.activePlayers.set(this.numPlayers, player)
   }
 
-  // This is used only during card counting simulation, not for creating a blackjack playing app
   public placeBets(): void {
     this.roundIsOver = false
     const trueCount = this.shoe.calcTrueCount()
@@ -60,7 +59,6 @@ export default class Game {
     this.dealer.addCardToInitialHand(this.shoe.dealCard())
   }
 
-  // placeInsuranceBets() will only be used in simulation, resolve will also be used in game-playing app
   public placeInsuranceBets(): void {
     if (this.dealer.currentHand().getCardAt(0).value !== 1) return
     this.activePlayers.forEach(p => {
@@ -83,12 +81,13 @@ export default class Game {
     })
   }
 
-  // Only used in simulation
   public playersPlayRound(): void {
     this.activePlayers.forEach(p => {
       for (let i = 0; i < p.hands.length; ++i) {
         if (p.hands[i].bustedOrDiscarded) continue
         p.currentHandIndex = i
+        if (p.hands[i].numCards() === 1)
+          p.hands[i].addCardToHand(this.shoe.dealCard())
         if (i == 0 && p.hands[i].hasBlackjack()) {
           console.info('Player has blackjack')
           p.resolveBet(BLACKJACK_MULTIPLIER, p.hands[i].bet)
@@ -103,30 +102,55 @@ export default class Game {
                 .getCardAt(0)
                 .valAsInt()
             )
-            let newCard: Card
+
             switch (action) {
               case Participant.actions.DOUBLE:
-                p.addCardToInitialHand(this.shoe.dealCard())
-                p.bankroll -= p.currentBet
-                p.currentBet *= 2
-                takeAction = false
+                // Can't double, just hit
+                if (p.hands[i].numCards() != 2) {
+                  p.hands[i].addCardToHand(this.shoe.dealCard())
+                  if (p.hands[i].calcHandTotal() > 21) {
+                    p.hands[i].bustedOrDiscarded = true
+                    takeAction = false
+                  }
+                } else {
+                  p.hands[i].addCardToHand(this.shoe.dealCard())
+                  p.bankroll -= p.currentBet
+                  p.currentBet *= 2
+                  if (p.hands[i].calcHandTotal() > 21) {
+                    p.hands[i].bustedOrDiscarded = true
+                  }
+                  takeAction = false
+                }
                 break
               case Participant.actions.HIT:
-                newCard = this.shoe.dealCard()
-                p.addCardToInitialHand(newCard)
+                p.hands[i].addCardToHand(this.shoe.dealCard())
                 if (p.hands[i].calcHandTotal() > 21) {
                   p.hands[i].bustedOrDiscarded = true
                   takeAction = false
-                  break
                 }
                 break
               case Participant.actions.SPLIT:
-                // TODO
-                console.log('splitting')
-                takeAction = false
+                p.bankroll -= p.currentBet
+                p.addHandForSplit(p.currentBet, p.hands[i].removeCardAt(1))
+                p.hands[i].addCardToHand(this.shoe.dealCard())
+                takeAction = true
                 break
               case Participant.actions.STAND:
                 takeAction = false
+                break
+              case Participant.actions.DS:
+                // Can't double, just stand
+                if (p.hands[i].numCards() != 2) {
+                  takeAction = false
+                } else {
+                  p.hands[i].addCardToHand(this.shoe.dealCard())
+                  p.bankroll -= p.currentBet
+                  p.currentBet *= 2
+                  if (p.hands[i].calcHandTotal() > 21) {
+                    p.hands[i].bustedOrDiscarded = true
+                  }
+                  takeAction = false
+                }
                 break
             }
           }

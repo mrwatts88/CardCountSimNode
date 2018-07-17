@@ -26,7 +26,14 @@ export default class Player extends Participant {
     return this.ill18
   }
 
-  public placeBet(count: number) {
+  public addHandForSplit(bet: number, card: Card): void {
+    const hand = new Hand()
+    hand.setBet(bet)
+    hand.addCardToHand(card)
+    this.hands.splice(this.currentHandIndex, 0, hand)
+  }
+
+  public placeBet(count: number): void {
     this.currentBet = this.bettingRamp.get(count)
     if (this.currentBet === undefined) this.currentBet = 1
     this.currentHand().bet = this.currentBet
@@ -90,15 +97,6 @@ export default class Player extends Participant {
     console.info(
       `Player's hand: ${this.currentHand().toString()}- ${actionString} with ${this.currentHand().calcHandTotal()}`
     )
-
-    if (
-      action === Participant.actions.DOUBLE ||
-      action === Participant.actions.STAND
-    )
-      this.currentHandIndex =
-        this.currentHandIndex + 1 >= this.hands.length
-          ? null
-          : this.currentHandIndex + 1
 
     return action
   }

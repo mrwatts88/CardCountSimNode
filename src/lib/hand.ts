@@ -15,6 +15,10 @@ export default class Hand {
     return this.hand.length
   }
 
+  public setBet(bet: number): void {
+    this.bet = bet
+  }
+
   public hasAce(): boolean {
     for (let card of this.hand) if (card.value == 1) return true
     return false
@@ -56,6 +60,10 @@ export default class Hand {
 
   public addCardToHand(card: Card): void {
     this.hand.push(card)
+  }
+
+  public removeCardAt(position: number): Card {
+    return this.hand.splice(position, 1)[0]
   }
 
   public getCardAt(position: number): Card {
