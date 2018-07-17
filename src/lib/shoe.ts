@@ -30,9 +30,9 @@ export default class Shoe extends Deck {
     // Based on closest number of 1/4 decks left in the undealt shoe.
     // Result is truncated because a true count must be reached before betting...
     // according to that count. (e.g. TC = 1.99 = 1)
-    let trueCount = Math.round(
-      this.runningCount / this.cardsNotDealt.length / 13
-    ) // Cards not dealt cannot be less than 13
+    let trueCount =
+      this.runningCount / (0.5 * Math.ceil(this.cardsNotDealt.length / 26)) // Estimating half-decks
+    trueCount = Math.floor(trueCount)
     console.info(
       `True count: ${trueCount}, Cards remaining: ${this.cardsNotDealt.length}`
     )

@@ -19,7 +19,7 @@ export default class Game {
     this.roundIsOver = true
     this.activePlayers = new Map<number, Player>()
     this.dealer = new Dealer()
-    this.shoe = new Shoe(NUMBER_OF_DECKS, CARDS_BEFORE_CUT, hiLoCountMap)
+    this.shoe = new Shoe(NUMBER_OF_DECKS, CARDS_AFTER_CUT, hiLoCountMap)
     this.shoe.shuffle()
   }
 
@@ -235,15 +235,8 @@ export default class Game {
   }
 
   public cleanUp(): void {
-    this.activePlayers.forEach(p => {
-      for (let i = 0; i < p.hands.length; ++i) {
-        p.hands[i].clearHand()
-        p.hands[i].bet = 0
-        p.currentBet = 0
-      }
-    })
-
-    this.dealer.currentHand().clearHand()
+    this.activePlayers.forEach(p => p.reset())
+    this.dealer.reset()
     this.roundIsOver = true
   }
 }
@@ -251,7 +244,7 @@ export default class Game {
 // Constants, enums, etc
 const BLACKJACK_MULTIPLIER = 1.5
 const NUMBER_OF_DECKS = 6
-const CARDS_BEFORE_CUT = 260
+const CARDS_AFTER_CUT = 78
 
 const hiLoCountMap = {
   1: -1,
