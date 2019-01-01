@@ -8,7 +8,8 @@ export default class Dealer extends Participant {
 
   public decideAction(h17: boolean): number {
     const total = this.calcHandTotal()
-    if (total > 21) throw 'Total is over 21, should not be deciding action.'
+    if (total > 21)
+      throw Error('Total is over 21, should not be deciding action.')
     if (total > 17) {
       console.info(`Dealer standing with: ${total}`)
       return Participant.actions.STAND
@@ -57,7 +58,7 @@ export default class Dealer extends Participant {
   }
 
   public hasBlackjack(): boolean {
-    let hasIt = this.currentHand().hasBlackjack()
+    const hasIt = this.currentHand().hasBlackjack()
     if (hasIt) console.info('Dealer has Blackjack.')
     return hasIt
   }

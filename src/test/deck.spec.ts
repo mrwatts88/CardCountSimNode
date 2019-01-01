@@ -1,6 +1,6 @@
-import 'mocha'
-import * as _ from 'lodash'
 import { expect } from 'chai'
+import * as _ from 'lodash'
+import 'mocha'
 import Card from '../lib/card'
 import Deck from '../lib/deck'
 
@@ -24,7 +24,7 @@ describe('Test Deck', () => {
 
     while (!deck.isEmpty()) {
       const cardValue = deck.dealCard().value
-      if (cardValue != values[i]) {
+      if (cardValue !== values[i]) {
         inOrder = false
         break
       }
@@ -58,7 +58,7 @@ describe('Test Deck', () => {
 
     while (!deck.isEmpty()) {
       const cardValue = deck.dealCard().value
-      if (cardValue != values[i]) {
+      if (cardValue !== values[i]) {
         inOrder = false
         break
       }

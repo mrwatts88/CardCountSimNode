@@ -1,7 +1,7 @@
 import Card from './card'
+import Hand from './hand'
 import Participant from './participant'
 import { IStrategy } from './strategy'
-import Hand from './hand'
 
 export default class Player extends Participant {
   public bankroll: number

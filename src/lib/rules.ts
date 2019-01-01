@@ -1,4 +1,4 @@
 export interface IRuleSet {
-    // TODO
-    h17: boolean
+  // TODO
+  h17: boolean
 }

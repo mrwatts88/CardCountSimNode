@@ -20,7 +20,7 @@ export default class Hand {
   }
 
   public hasAce(): boolean {
-    for (let card of this.hand) if (card.value == 1) return true
+    for (const card of this.hand) if (card.value === 1) return true
     return false
   }
 
@@ -32,16 +32,7 @@ export default class Hand {
   }
 
   public isSoft(): boolean {
-    return this.calcHandTotal() != this.calcHandTotalWithAcesAsOnes()
-  }
-
-  private calcHandTotalWithAcesAsOnes(): number {
-    let total: number = this.hand.reduce((prev, cur) => {
-      return prev + cur.valAsInt()
-    }, 0)
-
-    for (const card of this.hand) if (card.value === 1) total -= 10
-    return total
+    return this.calcHandTotal() !== this.calcHandTotalWithAcesAsOnes()
   }
 
   public calcHandTotal(): number {
@@ -86,5 +77,14 @@ export default class Hand {
     let str = ''
     for (const card of this.hand) str += `${card.toString()}, `
     return str
+  }
+
+  private calcHandTotalWithAcesAsOnes(): number {
+    let total: number = this.hand.reduce((prev, cur) => {
+      return prev + cur.valAsInt()
+    }, 0)
+
+    for (const card of this.hand) if (card.value === 1) total -= 10
+    return total
   }
 }

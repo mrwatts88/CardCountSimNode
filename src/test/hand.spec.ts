@@ -1,5 +1,5 @@
-import 'mocha'
 import { expect } from 'chai'
+import 'mocha'
 import Card from '../lib/card'
 import Hand from '../lib/hand'
 
