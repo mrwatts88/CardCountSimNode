@@ -1,4 +1,3 @@
-# CardCountSimNode
-A simulated Blackjack game with card counting functionality.
+# card-count-sim-library
 
-This is a library that can be used to create a blackjack game or to create a card counting simulation.
+A Blackjack library that can be used to create a blackjack game or to create a card counting simulation.
