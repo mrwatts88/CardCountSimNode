@@ -1,6 +1,7 @@
 import Game from './lib/game'
 import Player from './lib/player'
 import { SIX_DECK_H17_DAS_NO_SURR } from './lib/strategy'
+import { DEBUG } from './utils'
 
 const game = new Game({ h17: true })
 const player = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [
@@ -19,31 +20,33 @@ const player = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [
 game.addPlayer(player)
 
 while (!game.hasReachedCutCard()) {
-  console.info('Placing bets...')
+  DEBUG('Placing bets...')
   game.placeBets()
-  console.info('Dealing round...')
+  DEBUG('Dealing round...')
   game.dealRound()
-  console.info('Placing insurance...')
+  DEBUG('Placing insurance...')
   game.placeInsuranceBets()
-  console.info('Resolving insurance...')
+  DEBUG('Resolving insurance...')
   game.resolveInsurance()
 
   if (!game.getDealer().hasBlackjack()) {
     // After this method returns, all the players have the correct current bet and a hand total.
     // All busted players or ones already paid for a blackjack will be moved from the activePlayers
     // array to the bustedPlayers array.
-    console.info('Players playing round...')
+    DEBUG('Players playing round...')
     game.playersPlayRound()
+
     // After dealerPlayRound returns, the dealer will have a hand total and a busted status
-    console.info('Dealer playing round...')
+    DEBUG('Dealer playing round...')
     game.dealerPlayRound()
-    console.info('Resolving bets...')
-    game.resolveBets()
-  } else game.getActivePlayers().forEach(p => p.resolveBet(-1, 0))
+  }
+
+  DEBUG('Resolving bets...')
+  game.resolveBets()
 
   // Everyone has placed bets, gotten cards, played their hands, and been paid.
   // Restore the status to the state before the hand.
-  console.info('Cleaning up round...')
+  DEBUG('Cleaning up round...')
   game.cleanUp()
-  console.info('\n\n')
+  DEBUG('\n\n')
 }

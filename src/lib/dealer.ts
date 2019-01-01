@@ -1,3 +1,4 @@
+import { DEBUG } from '../utils'
 import Card from './card'
 import Participant from './participant'
 
@@ -11,21 +12,23 @@ export default class Dealer extends Participant {
     if (total > 21)
       throw Error('Total is over 21, should not be deciding action.')
     if (total > 17) {
-      console.info(`Dealer standing with: ${total}`)
+      DEBUG(`Dealer standing with: ${total}`)
       return Participant.actions.STAND
     } else if (total < 17) {
-      console.info(`Dealer hitting with: ${total}`)
+      DEBUG(`Dealer hitting with: ${total}`)
       return Participant.actions.HIT
     } else if (!h17) {
-      console.info(`Dealer standing with: ${total}`)
+      DEBUG(`Dealer standing with: ${total}`)
       return Participant.actions.STAND
     } else if (!this.hasAce()) {
-      console.info(`Dealer standing with: ${total}`)
+      DEBUG(`Dealer standing with: ${total}`)
       return Participant.actions.STAND
     } else {
-      if (this.isSoft()) console.info(`Dealer hitting with: ${total}`)
-      else console.info(`Dealer standing with: ${total}`)
-      return this.isSoft() ? Participant.actions.HIT : Participant.actions.STAND
+      if (this.isSoft()) DEBUG(`Dealer hitting with: ${total}`)
+      else DEBUG(`Dealer standing with: ${total}`)
+      return this.isSoft()
+        ? Participant.actions.HIT
+        : Participant.actions.STAND
     }
   }
 
@@ -59,7 +62,7 @@ export default class Dealer extends Participant {
 
   public hasBlackjack(): boolean {
     const hasIt = this.currentHand().hasBlackjack()
-    if (hasIt) console.info('Dealer has Blackjack.')
+    if (hasIt) DEBUG('Dealer has Blackjack.')
     return hasIt
   }
 

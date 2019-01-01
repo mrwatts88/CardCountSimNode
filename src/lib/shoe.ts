@@ -1,3 +1,4 @@
+import { DEBUG } from '../utils'
 import Card from './card'
 import Deck from './deck'
 
@@ -22,7 +23,7 @@ export default class Shoe extends Deck {
   public dealCard(): Card {
     const card: Card = super.dealCard()
     this.runningCount += this.countValueMapping[card.value]
-    console.info(`Dealt ${card} - Running count: ${this.runningCount}`)
+    DEBUG(`Dealt ${card} - Running count: ${this.runningCount}`)
     return card
   }
 
@@ -33,7 +34,7 @@ export default class Shoe extends Deck {
     let trueCount =
       this.runningCount / (0.5 * Math.ceil(this.cardsNotDealt.length / 26)) // Estimating half-decks
     trueCount = Math.floor(trueCount)
-    console.info(
+    DEBUG(
       `True count: ${trueCount}, Cards remaining: ${this.cardsNotDealt.length}`
     )
     return trueCount
@@ -50,9 +51,7 @@ export default class Shoe extends Deck {
   public hasReachedCutCard(): boolean {
     const reached: boolean = this.cardsNotDealt.length <= this.cardsAfterCut
     if (reached)
-      console.info(
-        `Reached the cut card with ${this.cardsNotDealt.length} cards left.`
-      )
+      DEBUG(`Reached the cut card with ${this.cardsNotDealt.length} cards left.`)
     return reached
   }
 

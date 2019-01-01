@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "types": ["node"],
     "moduleResolution": "node",
     "pretty": true,
     "sourceMap": true,

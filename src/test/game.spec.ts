@@ -1,10 +1,8 @@
 import { expect } from 'chai'
 import 'mocha'
 import Card from '../lib/card'
-import Dealer from '../lib/dealer'
 import Game from '../lib/game'
 import Player from '../lib/player'
-import Shoe from '../lib/shoe'
 import { SIX_DECK_H17_DAS_NO_SURR } from '../lib/strategy'
 
 describe('Test Game', () => {
@@ -13,7 +11,7 @@ describe('Test Game', () => {
   let game2: Game
   let player2: Player
 
-  before(() => {
+  beforeEach(() => {
     game1 = new Game({ h17: true })
     player1 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [
       1,
@@ -49,6 +47,7 @@ describe('Test Game', () => {
 
   it('test shuffleShoe', () => {
     game1.shuffleShoe()
+    // TODO: assertion
   })
 
   it('should add Player', () => {
@@ -60,33 +59,41 @@ describe('Test Game', () => {
   })
 
   it('should place bets', () => {
+    game1.addPlayer(player1)
     game1.placeBets()
-    game2.placeBets()
     expect(game1.getPlayerAt(1).currentBet).to.equal(1)
   })
 
   it('test dealRound', () => {
+    game1.addPlayer(player1)
     game1.dealRound()
-    game2.dealRound()
+    // TODO: assertion
   })
 
   it('give player and dealer blackjack', () => {
-    game2.dealer.clearHand()
     game2.dealer.addCardToHand(new Card(0, 1))
     game2.dealer.addCardToHand(new Card(0, 10))
 
-    player2.currentHand().clearHand()
     player2.addCardToInitialHand(new Card(0, 1))
     player2.addCardToInitialHand(new Card(0, 10))
+
+    // TODO: assertion
   })
 
   it('test placeInsuranceBets()', () => {
+    game1.addPlayer(player1)
+    game1.placeBets()
+    game1.dealRound()
     game1.placeInsuranceBets()
-    game2.placeInsuranceBets()
+    // TODO: assertion
   })
 
   it('test resolveInsurance()', () => {
+    game1.addPlayer(player1)
+    game1.placeBets()
+    game1.dealRound()
+    game1.placeInsuranceBets()
     game1.resolveInsurance()
-    game2.resolveInsurance()
+    // TODO: assertion
   })
 })

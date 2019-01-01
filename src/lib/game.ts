@@ -1,3 +1,4 @@
+import { DEBUG } from '../utils'
 import Card from './card'
 import Dealer from './dealer'
 import Participant from './participant'
@@ -6,13 +7,12 @@ import { IRuleSet } from './rules'
 import Shoe from './shoe'
 
 export default class Game {
+  public dealer: Dealer
   private activePlayers: Map<number, Player>
   private numPlayers: number
   private shoe: Shoe
   private roundIsOver: boolean
   private ruleSet: IRuleSet
-
-  public dealer: Dealer
 
   constructor(ruleSet: IRuleSet) {
     this.numPlayers = 0
@@ -63,8 +63,13 @@ export default class Game {
   public placeInsuranceBets(): void {
     if (this.dealer.currentHand().getCardAt(0).value !== 1) return
     this.activePlayers.forEach(p => {
-      if (p.usingIll18() && this.shoe.calcTrueCount() >= Ill18Indices.insurance)
+      if (
+        p.usingIll18() &&
+        this.shoe.calcTrueCount() >= Ill18Indices.insurance
+      ) {
         p.currentInsuranceBet = 0.5 * p.currentBet
+        p.bankroll -= p.currentInsuranceBet
+      }
     })
   }
 
@@ -77,7 +82,7 @@ export default class Game {
           .getCardAt(1)
           .valAsInt() === 10
       )
-        p.bankroll += p.currentInsuranceBet
+        p.bankroll += 3 * p.currentInsuranceBet
       p.currentInsuranceBet = 0
     })
   }
@@ -90,7 +95,7 @@ export default class Game {
         if (p.hands[i].numCards() === 1)
           p.hands[i].addCardToHand(this.shoe.dealCard())
         if (i === 0 && p.hands[i].hasBlackjack()) {
-          console.info('Player has blackjack')
+          DEBUG('Player has blackjack')
           p.resolveBet(BLACKJACK_MULTIPLIER, p.hands[i].bet)
           p.hands[i].bustedOrDiscarded = true
         } else {
@@ -174,9 +179,10 @@ export default class Game {
 
   public dealerPlayRound(): void {
     if (!this.playersLeft()) {
-      console.log('Dealer does nothing, no players left.')
+      DEBUG('Dealer does nothing, no players left.')
       return
     }
+
     let takeAction = true
     while (takeAction) {
       const action: number = this.dealer.decideAction(this.ruleSet.h17)
@@ -238,6 +244,15 @@ export default class Game {
     this.activePlayers.forEach(p => p.reset())
     this.dealer.reset()
     this.roundIsOver = true
+  }
+
+  public printGame(): void {
+    // public dealer: Dealer
+    // private activePlayers: Map<number, Player>
+    // private numPlayers: number
+    // private shoe: Shoe
+    // private roundIsOver: boolean
+    // private ruleSet: IRuleSet
   }
 }
 

@@ -1,3 +1,4 @@
+import { DEBUG } from '../utils'
 import Card from './card'
 import Hand from './hand'
 import Participant, { Action } from './participant'
@@ -38,7 +39,7 @@ export default class Player extends Participant {
     if (this.currentBet === undefined) this.currentBet = 1
     this.currentHand().bet = this.currentBet
     this.bankroll -= this.currentBet
-    console.info(
+    DEBUG(
       `Player's bet: ${this.currentBet} - Bankroll after bet: ${this.bankroll}`
     )
   }
@@ -46,7 +47,7 @@ export default class Player extends Participant {
   public resolveBet(multiplier: number, bet: number): void {
     // -1 = loss, 0 = push, 1 = even money win, 1.2 = 6 to 5, 1.5 = 3 to 2
     this.bankroll += multiplier === -1 ? 0 : bet * (multiplier + 1)
-    console.info(`Player's Bankroll after bet resolution: ${this.bankroll}`)
+    DEBUG(`Player's Bankroll after bet resolution: ${this.bankroll}`)
   }
 
   public decideAction(count: number, dealerUpcardValAsInt: number): number {
@@ -93,7 +94,7 @@ export default class Player extends Participant {
         break
     }
 
-    console.info(
+    DEBUG(
       `Player's hand: ${this.currentHand().toString()}- ${actionString} with ${this.currentHand().calcHandTotal()}`
     )
 

@@ -4,12 +4,14 @@
   "description": "testing card counting app",
   "main": "test.js",
   "dependencies": {
+    "@types/node": "^10.12.18",
     "lodash": "^4.17.5"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
     "@types/mocha": "^2.2.48",
     "chai": "^4.1.2",
+    "cross-env": "^5.2.0",
     "mocha": "^5.0.1",
     "ts-node": "^5.0.1",
     "typescript": "^2.7.2"
@@ -17,6 +19,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
+    "simulate": "npm run build && npm start",
+    "debug": "cross-env NODE_ENV=debug npm run simulate",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "fix": "tslint --fix 'src/**/*.ts'"
