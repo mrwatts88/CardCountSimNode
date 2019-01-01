@@ -1,11 +1,11 @@
 import { expect } from 'chai'
 import 'mocha'
-import Card from '../lib/card'
+import Card, { Suit } from '../lib/card'
 import Hand from '../lib/hand'
 
 describe('Test Hand', () => {
-  let hand
-  const suit = Card.Suits.C
+  let hand: Hand
+  const suit: Suit = Card.Suits.C
 
   beforeEach(() => {
     hand = new Hand()

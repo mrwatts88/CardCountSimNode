@@ -1,9 +1,10 @@
-enum Suit {
+export enum Suit {
   C,
   D,
   H,
   S,
 }
+
 export default class Card {
   public static Suits = Suit
   public readonly suit: Suit

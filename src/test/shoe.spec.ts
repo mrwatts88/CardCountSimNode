@@ -4,7 +4,7 @@ import Card from '../lib/card'
 import Shoe from '../lib/shoe'
 
 describe('Test Shoe', () => {
-  let shoe
+  let shoe: Shoe
 
   beforeEach(() => {
     shoe = new Shoe(6, 52, hiLoCountMap)
@@ -16,16 +16,17 @@ describe('Test Shoe', () => {
   })
 
   it('should deal a Card object', () => {
-    const card = shoe.dealCard()
+    const card: Card = shoe.dealCard()
     expect(card).to.be.instanceof(Card)
   })
 
   it('should deal 312 cards', () => {
-    let i = 0
+    let i: number = 0
     while (!shoe.isEmpty()) {
       shoe.dealCard()
       ++i
     }
+
     expect(i).to.equal(312)
     expect(shoe.isEmpty()).to.equal(true)
   })
@@ -40,22 +41,14 @@ describe('Test Shoe', () => {
   })
 
   it('should have reached cut card', () => {
-    let i = 0
-    while (i < 260) {
-      shoe.dealCard()
-      ++i
-    }
-
+    let i: number = 0
+    while (i++ < 260) shoe.dealCard()
     expect(shoe.hasReachedCutCard()).to.equal(true)
   })
 
   it('should NOT have reached cut card', () => {
-    let i = 0
-    while (i < 259) {
-      shoe.dealCard()
-      ++i
-    }
-
+    let i: number = 0
+    while (i++ < 259) shoe.dealCard()
     expect(shoe.hasReachedCutCard()).to.equal(false)
   })
 })

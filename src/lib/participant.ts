@@ -1,7 +1,7 @@
 import Card from './card'
 import Hand from './hand'
 
-enum Action {
+export enum Action {
   STAND,
   HIT,
   DOUBLE,

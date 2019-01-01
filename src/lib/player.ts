@@ -1,6 +1,6 @@
 import Card from './card'
 import Hand from './hand'
-import Participant from './participant'
+import Participant, { Action } from './participant'
 import { IStrategy } from './strategy'
 
 export default class Player extends Participant {
@@ -50,10 +50,10 @@ export default class Player extends Participant {
   }
 
   public decideAction(count: number, dealerUpcardValAsInt: number): number {
-    // TODO: Take into account ill18 and DS action type
+    // TODO: Take into account ill18
     if (this.currentHandIndex === null)
       throw new Error('There is no current hand to take action on')
-    let action
+    let action: Action
     if (this.currentHand().isPair())
       action = this.basicStrategy.PAIRS[dealerUpcardValAsInt][
         this.currentHand()
@@ -71,7 +71,6 @@ export default class Player extends Participant {
       action = this.basicStrategy.SOFT[dealerUpcardValAsInt][
         this.currentHand().calcHandTotal()
       ]
-    if (action === Participant.actions.DOUBLE) this.currentHand().bet *= 2
 
     let actionString: string
     switch (action) {

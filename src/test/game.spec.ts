@@ -8,10 +8,10 @@ import Shoe from '../lib/shoe'
 import { SIX_DECK_H17_DAS_NO_SURR } from '../lib/strategy'
 
 describe('Test Game', () => {
-  let game1
-  let player1
-  let game2
-  let player2
+  let game1: Game
+  let player1: Player
+  let game2: Game
+  let player2: Player
 
   before(() => {
     game1 = new Game({ h17: true })
@@ -27,6 +27,7 @@ describe('Test Game', () => {
       9,
       10,
     ])
+
     game2 = new Game({ h17: true })
     player2 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, [
       1,

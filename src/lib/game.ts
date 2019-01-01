@@ -8,10 +8,11 @@ import Shoe from './shoe'
 export default class Game {
   private activePlayers: Map<number, Player>
   private numPlayers: number
-  private dealer: Dealer
   private shoe: Shoe
   private roundIsOver: boolean
   private ruleSet: IRuleSet
+
+  public dealer: Dealer
 
   constructor(ruleSet: IRuleSet) {
     this.numPlayers = 0
@@ -115,6 +116,7 @@ export default class Game {
                 } else {
                   p.hands[i].addCardToHand(this.shoe.dealCard())
                   p.bankroll -= p.currentBet
+                  p.hands[i].bet = p.hands[i].bet * 2
                   p.currentBet *= 2
                   if (p.hands[i].calcHandTotal() > 21)
                     p.hands[i].bustedOrDiscarded = true
@@ -144,6 +146,7 @@ export default class Game {
                 else {
                   p.hands[i].addCardToHand(this.shoe.dealCard())
                   p.bankroll -= p.currentBet
+                  p.hands[i].bet = p.hands[i].bet * 2
                   p.currentBet *= 2
                   if (p.hands[i].calcHandTotal() > 21)
                     p.hands[i].bustedOrDiscarded = true

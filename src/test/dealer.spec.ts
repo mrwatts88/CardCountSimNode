@@ -5,7 +5,8 @@ import Dealer from '../lib/dealer'
 import Participant from '../lib/participant'
 
 describe('Test Dealer', () => {
-  let dealer
+  let dealer: Dealer
+
   beforeEach(() => {
     dealer = new Dealer()
   })

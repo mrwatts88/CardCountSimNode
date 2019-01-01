@@ -1,18 +1,20 @@
 import { expect } from 'chai'
 import 'mocha'
-import Card from '../lib/card'
+import Card, { Suit } from '../lib/card'
 
 describe('Test Card', () => {
-  let card
-  let cards
-  const suit = Card.Suits.C
-  const val = 1
-  const stringVal = 'AC'
+  let card: Card
+  let cards: Card[]
+  const suit: Suit = Card.Suits.C
+  const val: number = 1
+  const stringVal: string = 'AC'
+  const NUMBER_OF_RANKS = 13
 
   beforeEach(() => {
     card = new Card(suit, val)
     cards = []
-    for (let i = 1; i <= 13; i++) cards.push(new Card(Card.Suits.C, i))
+    for (let i = 1; i <= NUMBER_OF_RANKS; i++)
+      cards.push(new Card(Card.Suits.C, i))
   })
 
   it('should construct with suit and value', () => {
@@ -40,6 +42,7 @@ describe('Test Card', () => {
       'Q',
       'K',
     ]
+
     for (let i = 0; i < cards.length; ++i)
       expect(cards[i].valAsString()).to.equal(stringVals[i])
   })
