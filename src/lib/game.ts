@@ -10,7 +10,7 @@ export default class Game {
   public dealer: Dealer
   private activePlayers: Map<number, Player>
   private numPlayers: number
-  private shoe: Shoe
+  public shoe: Shoe
   private roundIsOver: boolean
   private ruleSet: IRuleSet
 
@@ -26,6 +26,10 @@ export default class Game {
 
   public getActivePlayers(): Map<number, Player> {
     return this.activePlayers
+  }
+
+  public getTrueCount(): number {
+    return this.shoe.calcTrueCount()
   }
 
   public shuffleShoe(): void {
@@ -68,7 +72,7 @@ export default class Game {
         this.shoe.calcTrueCount() >= Ill18Indices.insurance
       ) {
         p.currentInsuranceBet = 0.5 * p.currentBet
-        p.bankroll -= p.currentInsuranceBet
+        p.makeBet(p.currentInsuranceBet)
       }
     })
   }
@@ -120,7 +124,7 @@ export default class Game {
                   }
                 } else {
                   p.hands[i].addCardToHand(this.shoe.dealCard())
-                  p.bankroll -= p.currentBet
+                  p.makeBet(p.currentBet)
                   p.hands[i].bet = p.hands[i].bet * 2
                   p.currentBet *= 2
                   if (p.hands[i].calcHandTotal() > 21)
@@ -137,7 +141,7 @@ export default class Game {
                 }
                 break
               case Participant.actions.SPLIT:
-                p.bankroll -= p.currentBet
+                p.makeBet(p.currentBet)
                 p.addHandForSplit(p.currentBet, p.hands[i].removeCardAt(1))
                 p.hands[i].addCardToHand(this.shoe.dealCard())
                 takeAction = true
@@ -150,7 +154,7 @@ export default class Game {
                 if (p.hands[i].numCards() !== 2) takeAction = false
                 else {
                   p.hands[i].addCardToHand(this.shoe.dealCard())
-                  p.bankroll -= p.currentBet
+                  p.makeBet(p.currentBet)
                   p.hands[i].bet = p.hands[i].bet * 2
                   p.currentBet *= 2
                   if (p.hands[i].calcHandTotal() > 21)
@@ -259,7 +263,7 @@ export default class Game {
 // Constants, enums, etc
 const BLACKJACK_MULTIPLIER = 1.5
 const NUMBER_OF_DECKS = 6
-const CARDS_AFTER_CUT = 78
+const CARDS_AFTER_CUT = 52
 
 const hiLoCountMap = {
   1: -1,

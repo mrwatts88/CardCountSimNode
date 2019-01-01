@@ -28,11 +28,11 @@ export default class Shoe extends Deck {
   }
 
   public calcTrueCount(): number {
-    // Based on closest number of 1/4 decks left in the undealt shoe.
+    // Based on closest number of 1/2 decks left in the undealt shoe.
     // Result is truncated because a true count must be reached before betting...
     // according to that count. (e.g. TC = 1.99 = 1)
-    let trueCount =
-      this.runningCount / (0.5 * Math.ceil(this.cardsNotDealt.length / 26)) // Estimating half-decks
+    const denominator = 0.5 * Math.ceil(this.cardsNotDealt.length / 26)
+    let trueCount = denominator === 0 ? 0 : this.runningCount / denominator
     trueCount = Math.floor(trueCount)
     DEBUG(
       `True count: ${trueCount}, Cards remaining: ${this.cardsNotDealt.length}`
@@ -51,13 +51,16 @@ export default class Shoe extends Deck {
   public hasReachedCutCard(): boolean {
     const reached: boolean = this.cardsNotDealt.length <= this.cardsAfterCut
     if (reached)
-      DEBUG(`Reached the cut card with ${this.cardsNotDealt.length} cards left.`)
+      DEBUG(
+        `Reached the cut card with ${this.cardsNotDealt.length} cards left.`
+      )
     return reached
   }
 
   public shuffle(): void {
     for (let i = 0; i < this.numDecks; ++i) this.addShuffledDeck(new Deck())
     super.shuffle()
+    this.runningCount = 0
   }
 
   private addShuffledDeck(deck: Deck) {

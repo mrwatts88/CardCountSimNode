@@ -11,20 +11,26 @@ export default class Player extends Participant {
   private bettingRamp: Map<number, number>
   private ill18: boolean
   private basicStrategy: IStrategy
+  private totalBet: number
 
   constructor(basicStrategy: IStrategy, ill18: boolean, bettingRamp: number[]) {
     super()
     this.basicStrategy = basicStrategy
     this.ill18 = ill18
     this.bettingRamp = new Map()
-    for (let i = 1; i < 11; ++i) this.bettingRamp.set(i, bettingRamp[i - 1])
+    for (let i = 0; i < 11; ++i) this.bettingRamp.set(i, bettingRamp[i])
     this.currentBet = 0
     this.currentInsuranceBet = 0
     this.bankroll = 0
+    this.totalBet = 0
   }
 
   public usingIll18(): boolean {
     return this.ill18
+  }
+
+  public getTotalBet() {
+    return this.totalBet
   }
 
   public addHandForSplit(bet: number, card: Card): void {
@@ -35,13 +41,20 @@ export default class Player extends Participant {
   }
 
   public placeBet(count: number): void {
-    this.currentBet = this.bettingRamp.get(count)
-    if (this.currentBet === undefined) this.currentBet = 1
+    let adjustedCount: number = count
+    if (count < 1) adjustedCount = 0
+    if (count > 10) adjustedCount = 10
+    this.currentBet = this.bettingRamp.get(adjustedCount)
     this.currentHand().bet = this.currentBet
-    this.bankroll -= this.currentBet
+    this.makeBet(this.currentBet)
     DEBUG(
       `Player's bet: ${this.currentBet} - Bankroll after bet: ${this.bankroll}`
     )
+  }
+
+  public makeBet(amount: number) {
+    this.totalBet += amount
+    this.bankroll -= amount
   }
 
   public resolveBet(multiplier: number, bet: number): void {
@@ -99,5 +112,16 @@ export default class Player extends Participant {
     )
 
     return action
+  }
+
+  public getStats() {
+    return {
+      totalBet: `${this.totalBet} units`,
+      profit: `${this.bankroll} units`,
+      edge:
+        this.totalBet === 0
+          ? '0.00%'
+          : `${((100 * this.bankroll) / this.totalBet).toFixed(5)}%`,
+    }
   }
 }
