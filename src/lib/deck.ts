@@ -1,6 +1,6 @@
-import Card from './card'
+import {Card} from './card'
 
-export default class Deck {
+export class Deck {
   public static NUMBER_OF_SUITS = 4
   public static NUMBER_OF_RANKS = 13
 

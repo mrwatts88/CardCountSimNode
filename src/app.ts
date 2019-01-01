@@ -1,7 +1,7 @@
-import Game from './lib/game'
-import Player from './lib/player'
+import { Game } from './lib/game'
+import { Player } from './lib/player'
 import { SIX_DECK_H17_DAS_NO_SURR } from './lib/strategy'
-import { DEBUG } from './utils'
+import { DEBUG } from './lib/utils'
 
 const ramp = [0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
 const flat = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
@@ -13,7 +13,7 @@ game.addPlayer(player)
 
 console.log(game.getPlayerAt(1).getStats().edge)
 
-for (let i: number = 0; i < 100000; ++i) {
+for (let i: number = 0; i < 1; ++i) {
   while (!game.hasReachedCutCard()) {
     DEBUG('Placing bets...')
     game.placeBets()

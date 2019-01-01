@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 import * as _ from 'lodash'
 import 'mocha'
-import Card from '../lib/card'
-import Deck from '../lib/deck'
+import { Card } from '../lib/card'
+import { Deck } from '../lib/deck'
 
 const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 

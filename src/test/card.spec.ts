@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
-import Card, { Suit } from '../lib/card'
+import { Card, Suit } from '../lib/card'
 
 describe('Test Card', () => {
   let card: Card

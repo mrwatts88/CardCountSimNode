@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "postbuild": "cp -r dist/lib/* ../card-count-sim-server/blackjack-lib/",
     "start": "node dist/app.js",
     "simulate": "npm run build && npm start",
     "debug": "cross-env NODE_ENV=debug npm run simulate",

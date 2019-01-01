@@ -1,5 +1,5 @@
-import Card from './card'
-import Hand from './hand'
+import {Card} from './card'
+import {Hand} from './hand'
 
 export enum Action {
   STAND,
@@ -9,7 +9,7 @@ export enum Action {
   DS,
 }
 
-export default abstract class Participant {
+export abstract class Participant {
   public static actions = Action
   public hands: Hand[]
   public currentHandIndex: number

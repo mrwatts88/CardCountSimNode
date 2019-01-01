@@ -1,6 +1,6 @@
-import Card from './card'
+import {Card} from './card'
 
-export default class Hand {
+export class Hand {
   public bustedOrDiscarded: boolean
   public bet: number
   private hand: Card[]

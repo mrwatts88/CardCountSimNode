@@ -1,10 +1,10 @@
-import { DEBUG } from '../utils'
-import Card from './card'
-import Hand from './hand'
-import Participant, { Action } from './participant'
+import { DEBUG } from './utils'
+import {Card} from './card'
+import {Hand} from './hand'
+import {Participant, Action } from './participant'
 import { IStrategy } from './strategy'
 
-export default class Player extends Participant {
+export class Player extends Participant {
   public bankroll: number
   public currentBet: number
   public currentInsuranceBet: number

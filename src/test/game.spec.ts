@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 import 'mocha'
-import Card from '../lib/card'
-import Game from '../lib/game'
-import Player from '../lib/player'
+import { Card } from '../lib/card'
+import { Game } from '../lib/game'
+import { Player } from '../lib/player'
 import { SIX_DECK_H17_DAS_NO_SURR } from '../lib/strategy'
 
 describe('Test Game', () => {

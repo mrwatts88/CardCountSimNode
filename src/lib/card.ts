@@ -5,7 +5,7 @@ export enum Suit {
   S,
 }
 
-export default class Card {
+export class Card {
   public static Suits = Suit
   public readonly suit: Suit
   public readonly value: number

@@ -1,8 +1,8 @@
-import { DEBUG } from '../utils'
-import Card from './card'
-import Deck from './deck'
+import { DEBUG } from './utils'
+import {Card} from './card'
+import {Deck} from './deck'
 
-export default class Shoe extends Deck {
+export class Shoe extends Deck {
   public numDecks: number
   public cardsAfterCut: number
   public runningCount: number

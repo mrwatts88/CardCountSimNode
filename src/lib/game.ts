@@ -1,12 +1,12 @@
-import { DEBUG } from '../utils'
-import Card from './card'
-import Dealer from './dealer'
-import Participant from './participant'
-import Player from './player'
+import { DEBUG } from './utils'
+import {Card} from './card'
+import {Dealer} from './dealer'
+import {Participant} from './participant'
+import {Player} from './player'
 import { IRuleSet } from './rules'
-import Shoe from './shoe'
+import {Shoe} from './shoe'
 
-export default class Game {
+export class Game {
   public dealer: Dealer
   private activePlayers: Map<number, Player>
   private numPlayers: number
