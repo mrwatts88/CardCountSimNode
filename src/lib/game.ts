@@ -1,14 +1,14 @@
 import { DEBUG } from './utils'
-import {Card} from './card'
-import {Dealer} from './dealer'
-import {Participant} from './participant'
-import {Player} from './player'
+import { Card } from './card'
+import { Dealer } from './dealer'
+import { Participant } from './participant'
+import { Player } from './player'
 import { IRuleSet } from './rules'
-import {Shoe} from './shoe'
+import { Shoe } from './shoe'
 
 export class Game {
   public dealer: Dealer
-  private activePlayers: Map<number, Player>
+  private activePlayers: object
   private numPlayers: number
   public shoe: Shoe
   private roundIsOver: boolean
@@ -18,13 +18,13 @@ export class Game {
     this.numPlayers = 0
     this.ruleSet = ruleSet
     this.roundIsOver = true
-    this.activePlayers = new Map<number, Player>()
+    this.activePlayers = {}
     this.dealer = new Dealer()
     this.shoe = new Shoe(NUMBER_OF_DECKS, CARDS_AFTER_CUT, hiLoCountMap)
     this.shoe.shuffle()
   }
 
-  public getActivePlayers(): Map<number, Player> {
+  public getActivePlayers(): object {
     return this.activePlayers
   }
 
@@ -43,69 +43,70 @@ export class Game {
   public addPlayer(player: Player): void {
     if (!this.roundIsOver) throw new Error('Cannot add player during round.')
     ++this.numPlayers
-    this.activePlayers.set(this.numPlayers, player)
+    this.activePlayers[this.numPlayers] = player
   }
 
   public placeBets(): void {
     this.roundIsOver = false
     const trueCount = this.shoe.calcTrueCount()
-    this.activePlayers.forEach(p => p.placeBet(trueCount))
+    for (const p in this.activePlayers) this.activePlayers[p].placeBet(trueCount);
   }
 
   public dealRound(): void {
     // TODO: Check that all active players have placed a bet
-    this.activePlayers.forEach(p => {
-      p.addCardToInitialHand(this.shoe.dealCard())
-    })
+
+    for (const p in this.activePlayers) this.activePlayers[p].addCardToInitialHand(this.shoe.dealCard())
+
     this.dealer.addCardToInitialHand(this.shoe.dealCard())
-    this.activePlayers.forEach(p => {
-      p.addCardToInitialHand(this.shoe.dealCard())
-    })
+    for (const p in this.activePlayers) this.activePlayers[p].addCardToInitialHand(this.shoe.dealCard())
     this.dealer.addCardToInitialHand(this.shoe.dealCard())
   }
 
   public placeInsuranceBets(): void {
     if (this.dealer.currentHand().getCardAt(0).value !== 1) return
-    this.activePlayers.forEach(p => {
+    for (const p in this.activePlayers) {
       if (
-        p.usingIll18() &&
+        this.activePlayers[p].usingIll18() &&
         this.shoe.calcTrueCount() >= Ill18Indices.insurance
       ) {
-        p.currentInsuranceBet = 0.5 * p.currentBet
-        p.makeBet(p.currentInsuranceBet)
+        this.activePlayers[p].currentInsuranceBet = 0.5 * this.activePlayers[p].currentBet
+        this.activePlayers[p].makeBet(this.activePlayers[p].currentInsuranceBet)
       }
-    })
+    }
   }
 
   public resolveInsurance(): void {
     if (this.dealer.currentHand().getCardAt(0).value !== 1) return
-    this.activePlayers.forEach(p => {
+    for (const p in this.activePlayers) {
       if (
         this.dealer
           .currentHand()
           .getCardAt(1)
           .valAsInt() === 10
       )
-        p.bankroll += 3 * p.currentInsuranceBet
-      p.currentInsuranceBet = 0
-    })
+        this.activePlayers[p].bankroll += 3 * this.activePlayers[p].currentInsuranceBet
+      this.activePlayers[p].currentInsuranceBet = 0
+    }
+
   }
 
   public playersPlayRound(): void {
-    this.activePlayers.forEach(p => {
-      for (let i = 0; i < p.hands.length; ++i) {
-        if (p.hands[i].bustedOrDiscarded) continue
-        p.currentHandIndex = i
-        if (p.hands[i].numCards() === 1)
-          p.hands[i].addCardToHand(this.shoe.dealCard())
-        if (i === 0 && p.hands[i].hasBlackjack()) {
+
+    for (const p in this.activePlayers) {
+
+      for (let i = 0; i < this.activePlayers[p].hands.length; ++i) {
+        if (this.activePlayers[p].hands[i].bustedOrDiscarded) continue
+        this.activePlayers[p].currentHandIndex = i
+        if (this.activePlayers[p].hands[i].numCards() === 1)
+          this.activePlayers[p].hands[i].addCardToHand(this.shoe.dealCard())
+        if (i === 0 && this.activePlayers[p].hands[i].hasBlackjack()) {
           DEBUG('Player has blackjack')
-          p.resolveBet(BLACKJACK_MULTIPLIER, p.hands[i].bet)
-          p.hands[i].bustedOrDiscarded = true
+          this.activePlayers[p].resolveBet(BLACKJACK_MULTIPLIER, this.activePlayers[p].hands[i].bet)
+          this.activePlayers[p].hands[i].bustedOrDiscarded = true
         } else {
           let takeAction = true
           while (takeAction) {
-            const action: number = p.decideAction(
+            const action: number = this.activePlayers[p].decideAction(
               this.shoe.calcTrueCount(),
               this.dealer
                 .currentHand()
@@ -116,34 +117,34 @@ export class Game {
             switch (action) {
               case Participant.actions.DOUBLE:
                 // Can't double, just hit
-                if (p.hands[i].numCards() !== 2) {
-                  p.hands[i].addCardToHand(this.shoe.dealCard())
-                  if (p.hands[i].calcHandTotal() > 21) {
-                    p.hands[i].bustedOrDiscarded = true
+                if (this.activePlayers[p].hands[i].numCards() !== 2) {
+                  this.activePlayers[p].hands[i].addCardToHand(this.shoe.dealCard())
+                  if (this.activePlayers[p].hands[i].calcHandTotal() > 21) {
+                    this.activePlayers[p].hands[i].bustedOrDiscarded = true
                     takeAction = false
                   }
                 } else {
-                  p.hands[i].addCardToHand(this.shoe.dealCard())
-                  p.makeBet(p.currentBet)
-                  p.hands[i].bet = p.hands[i].bet * 2
-                  p.currentBet *= 2
-                  if (p.hands[i].calcHandTotal() > 21)
-                    p.hands[i].bustedOrDiscarded = true
+                  this.activePlayers[p].hands[i].addCardToHand(this.shoe.dealCard())
+                  this.activePlayers[p].makeBet(this.activePlayers[p].currentBet)
+                  this.activePlayers[p].hands[i].bet = this.activePlayers[p].hands[i].bet * 2
+                  this.activePlayers[p].currentBet *= 2
+                  if (this.activePlayers[p].hands[i].calcHandTotal() > 21)
+                    this.activePlayers[p].hands[i].bustedOrDiscarded = true
 
                   takeAction = false
                 }
                 break
               case Participant.actions.HIT:
-                p.hands[i].addCardToHand(this.shoe.dealCard())
-                if (p.hands[i].calcHandTotal() > 21) {
-                  p.hands[i].bustedOrDiscarded = true
+                this.activePlayers[p].hands[i].addCardToHand(this.shoe.dealCard())
+                if (this.activePlayers[p].hands[i].calcHandTotal() > 21) {
+                  this.activePlayers[p].hands[i].bustedOrDiscarded = true
                   takeAction = false
                 }
                 break
               case Participant.actions.SPLIT:
-                p.makeBet(p.currentBet)
-                p.addHandForSplit(p.currentBet, p.hands[i].removeCardAt(1))
-                p.hands[i].addCardToHand(this.shoe.dealCard())
+                this.activePlayers[p].makeBet(this.activePlayers[p].currentBet)
+                this.activePlayers[p].addHandForSplit(this.activePlayers[p].currentBet, this.activePlayers[p].hands[i].removeCardAt(1))
+                this.activePlayers[p].hands[i].addCardToHand(this.shoe.dealCard())
                 takeAction = true
                 break
               case Participant.actions.STAND:
@@ -151,14 +152,14 @@ export class Game {
                 break
               case Participant.actions.DS:
                 // Can't double, just stand
-                if (p.hands[i].numCards() !== 2) takeAction = false
+                if (this.activePlayers[p].hands[i].numCards() !== 2) takeAction = false
                 else {
-                  p.hands[i].addCardToHand(this.shoe.dealCard())
-                  p.makeBet(p.currentBet)
-                  p.hands[i].bet = p.hands[i].bet * 2
-                  p.currentBet *= 2
-                  if (p.hands[i].calcHandTotal() > 21)
-                    p.hands[i].bustedOrDiscarded = true
+                  this.activePlayers[p].hands[i].addCardToHand(this.shoe.dealCard())
+                  this.activePlayers[p].makeBet(this.activePlayers[p].currentBet)
+                  this.activePlayers[p].hands[i].bet = this.activePlayers[p].hands[i].bet * 2
+                  this.activePlayers[p].currentBet *= 2
+                  if (this.activePlayers[p].hands[i].calcHandTotal() > 21)
+                    this.activePlayers[p].hands[i].bustedOrDiscarded = true
                   takeAction = false
                 }
                 break
@@ -166,18 +167,18 @@ export class Game {
           }
         }
       }
-    })
+    }
   }
 
   public playersLeft(): boolean {
     let players = false
-    this.activePlayers.forEach(p => {
-      for (const hand of p.hands)
+    for (const p in this.activePlayers) {
+      for (const hand of this.activePlayers[p].hands)
         if (!hand.bustedOrDiscarded) {
           players = true
           break
         }
-    })
+    }
     return players
   }
 
@@ -209,25 +210,25 @@ export class Game {
   }
 
   public resolveBets(): void {
-    this.activePlayers.forEach(p => {
-      for (const hand of p.hands) {
+    for (const p in this.activePlayers) {
+      for (const hand of this.activePlayers[p].hands) {
         if (hand.bustedOrDiscarded) continue
 
         if (this.dealer.hasBlackjack())
           hand.hasBlackjack()
-            ? p.resolveBet(0, hand.bet)
-            : p.resolveBet(-1, hand.bet)
+            ? this.activePlayers[p].resolveBet(0, hand.bet)
+            : this.activePlayers[p].resolveBet(-1, hand.bet)
         else if (this.dealer.currentHand().bustedOrDiscarded)
-          p.resolveBet(1, hand.bet)
+          this.activePlayers[p].resolveBet(1, hand.bet)
         else {
           const diff =
             hand.calcHandTotal() - this.dealer.currentHand().calcHandTotal()
-          if (diff > 0) p.resolveBet(1, hand.bet)
-          else if (diff < 0) p.resolveBet(-1, hand.bet)
-          else p.resolveBet(0, hand.bet)
+          if (diff > 0) this.activePlayers[p].resolveBet(1, hand.bet)
+          else if (diff < 0) this.activePlayers[p].resolveBet(-1, hand.bet)
+          else this.activePlayers[p].resolveBet(0, hand.bet)
         }
       }
-    })
+    }
   }
 
   public getNumPlayers(): number {
@@ -236,8 +237,8 @@ export class Game {
 
   public getPlayerAt(i: number): Player {
     if (i < 1) throw new Error('Invalid index for player')
-    if (this.activePlayers.size < i) throw new Error('No player here')
-    return this.activePlayers.get(i)
+    if (!this.activePlayers[i]) throw new Error('No player here')
+    return this.activePlayers[i]
   }
 
   public getDealer(): Dealer {
@@ -245,18 +246,9 @@ export class Game {
   }
 
   public cleanUp(): void {
-    this.activePlayers.forEach(p => p.reset())
+    for (const p in this.activePlayers) this.activePlayers[p].reset()
     this.dealer.reset()
     this.roundIsOver = true
-  }
-
-  public printGame(): void {
-    // public dealer: Dealer
-    // private activePlayers: Map<number, Player>
-    // private numPlayers: number
-    // private shoe: Shoe
-    // private roundIsOver: boolean
-    // private ruleSet: IRuleSet
   }
 }
 

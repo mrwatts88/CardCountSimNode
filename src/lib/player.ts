@@ -1,14 +1,14 @@
 import { DEBUG } from './utils'
-import {Card} from './card'
-import {Hand} from './hand'
-import {Participant, Action } from './participant'
+import { Card } from './card'
+import { Hand } from './hand'
+import { Participant, Action } from './participant'
 import { IStrategy } from './strategy'
 
 export class Player extends Participant {
   public bankroll: number
   public currentBet: number
   public currentInsuranceBet: number
-  private bettingRamp: Map<number, number>
+  private bettingRamp: object
   private ill18: boolean
   private basicStrategy: IStrategy
   private totalBet: number
@@ -17,8 +17,8 @@ export class Player extends Participant {
     super()
     this.basicStrategy = basicStrategy
     this.ill18 = ill18
-    this.bettingRamp = new Map()
-    for (let i = 0; i < 11; ++i) this.bettingRamp.set(i, bettingRamp[i])
+    this.bettingRamp = {}
+    for (let i = 0; i < 11; ++i) this.bettingRamp[i] = bettingRamp[i]
     this.currentBet = 0
     this.currentInsuranceBet = 0
     this.bankroll = 0
@@ -44,7 +44,7 @@ export class Player extends Participant {
     let adjustedCount: number = count
     if (count < 1) adjustedCount = 0
     if (count > 10) adjustedCount = 10
-    this.currentBet = this.bettingRamp.get(adjustedCount)
+    this.currentBet = this.bettingRamp[adjustedCount]
     this.currentHand().bet = this.currentBet
     this.makeBet(this.currentBet)
     DEBUG(
