@@ -3,17 +3,29 @@ import { Player } from './lib/player'
 import { SIX_DECK_H17_DAS_NO_SURR } from './lib/strategy'
 import { DEBUG } from './lib/utils'
 
-const ramp = [0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+const ramp = [5, 25, 40, 60, 60, 60, 60, 60, 60, 60, 60]
+const ramp2 = [0, 25, 40, 60, 60, 60, 60, 60, 60, 60, 60]
+const ramp3 = [0, 25, 40, 60, 60, 60, 60, 60, 60, 60, 60]
 const flat = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
 
 const game = new Game({ h17: true })
-const player = new Player(SIX_DECK_H17_DAS_NO_SURR, false, flat)
+const player = new Player(SIX_DECK_H17_DAS_NO_SURR, false, ramp)
+const player2 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, ramp2)
+const player3 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, ramp3)
+const player4 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, ramp)
+const player5 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, ramp)
+const player6 = new Player(SIX_DECK_H17_DAS_NO_SURR, false, ramp)
 
 game.addPlayer(player)
+game.addPlayer(player2)
+game.addPlayer(player3)
+// game.addPlayer(player4)
+// game.addPlayer(player5)
+// game.addPlayer(player6)
 
 console.log(game.getPlayerAt(1).getStats().edge)
 
-for (let i: number = 0; i < 1; ++i) {
+for (let i: number = 0; i < 15600; ++i) {
   while (!game.hasReachedCutCard()) {
     DEBUG('Placing bets...')
     game.placeBets()
@@ -47,7 +59,13 @@ for (let i: number = 0; i < 1; ++i) {
     DEBUG('\n\n')
   }
 
-  if (!(i % 500)) console.log(game.getPlayerAt(1).getStats())
+  if (!(i % 300)) console.log(Math.floor(
+  (
+    game.getPlayerAt(1).bankroll+
+    game.getPlayerAt(2).bankroll+
+    game.getPlayerAt(3).bankroll
+  )/3))
+
   game.shuffleShoe()
 }
 
